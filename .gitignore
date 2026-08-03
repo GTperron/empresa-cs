@@ -1,0 +1,53 @@
+# Maven
+target/
+dependency-reduced-pom.xml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+*.iws
+*.ipr
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Spring Boot
+.m2/
+*.jar
+application-*.properties
+application-*.yml
+
+# Database
+*.db
+*.sqlite
+
+# OS
+Thumbs.db
+.Thumbs.db
+
+# Node (if used)
+node_modules/
+npm-debug.log
+
+# Gradle (if used)
+.gradle/
+build/
+
+# Others
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/

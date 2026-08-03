@@ -1,0 +1,84 @@
+spring:
+  profiles:
+    active: dev
+
+  application:
+    name: empresa-cs-inventario
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+    open-in-view: false
+
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+logging:
+  level:
+    root: INFO
+    com.empresa.inventario: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+server:
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on-param
+    include-exception: false
+
+# Documentación Swagger/OpenAPI
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  show-actuator: false
+
+# Configuración de seguridad (JWT)
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:cambiar-en-produccion-con-valor-seguro-minimo-256-bits}
+      expiration: 900000  # 15 minutos en milisegundos
+      refresh-expiration: 2592000000  # 30 días en milisegundos
+
+  mail:
+    from: noreply@empresa.com
+    reset-password-expiration: 3600000  # 1 hora en milisegundos
