@@ -80,6 +80,18 @@ public class ProductoService {
     }
 
     /**
+     * Obtiene la entidad Producto validando que esté activa.
+     * Reutilizado por los servicios de movimientos, transformación y venta.
+     */
+    public Producto obtenerEntidadActiva(Long id) {
+        Producto producto = obtenerEntidad(id);
+        if (!producto.getActivo()) {
+            throw new OperacionInvalidaException("El producto '" + producto.getCodigo() + "' está inactivo");
+        }
+        return producto;
+    }
+
+    /**
      * Edita un producto. Revalida la unicidad del código excluyendo el propio registro.
      */
     public ProductoDTO editar(Long id, EditarProductoRequest request) {

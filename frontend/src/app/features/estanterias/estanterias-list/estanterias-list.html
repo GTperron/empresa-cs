@@ -1,0 +1,94 @@
+<nav class="breadcrumb">
+  <a routerLink="/app/almacenes">Almacenes</a>
+  <mat-icon class="sep">chevron_right</mat-icon>
+  <a [routerLink]="['/app/almacenes', almacenId, 'zonas']">{{ almacenNombre() || 'Almacén' }}</a>
+  <mat-icon class="sep">chevron_right</mat-icon>
+  <span class="actual">{{ zonaNombre() || 'Estanterías' }}</span>
+</nav>
+
+<div class="encabezado">
+  <h1 class="titulo">Estanterías</h1>
+  <span class="spacer"></span>
+
+  <mat-form-field appearance="outline" class="filtro" subscriptSizing="dynamic">
+    <mat-label>Estado</mat-label>
+    <mat-select [value]="filtroActivo()" (selectionChange)="cambiarFiltro($event.value)">
+      <mat-option [value]="null">Todos</mat-option>
+      <mat-option [value]="true">Activos</mat-option>
+      <mat-option [value]="false">Inactivos</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  @if (esAdmin()) {
+    <button mat-flat-button color="primary" (click)="nuevo()">
+      <mat-icon>add</mat-icon>
+      Nueva estantería
+    </button>
+  }
+</div>
+
+@if (cargando()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<div class="tabla-contenedor">
+  <table mat-table [dataSource]="datos()" class="tabla">
+    <ng-container matColumnDef="codigo">
+      <th mat-header-cell *matHeaderCellDef>Código</th>
+      <td mat-cell *matCellDef="let e">{{ e.codigo }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let e">{{ e.nombre }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="descripcion">
+      <th mat-header-cell *matHeaderCellDef>Descripción</th>
+      <td mat-cell *matCellDef="let e">{{ e.descripcion || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="capacidad">
+      <th mat-header-cell *matHeaderCellDef>Capacidad máx.</th>
+      <td mat-cell *matCellDef="let e">{{ e.capacidadMaxima ?? '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="estado">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let e">
+        <span class="estado" [class.activo]="e.activo" [class.inactivo]="!e.activo">
+          {{ e.activo ? 'Activo' : 'Inactivo' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="col-acciones">Acciones</th>
+      <td mat-cell *matCellDef="let e" class="col-acciones">
+        <button mat-icon-button (click)="editar(e)" matTooltip="Editar" aria-label="Editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+        @if (e.activo) {
+          <button mat-icon-button (click)="desactivar(e)" matTooltip="Desactivar" aria-label="Desactivar">
+            <mat-icon>toggle_on</mat-icon>
+          </button>
+        } @else {
+          <button mat-icon-button (click)="activar(e)" matTooltip="Activar" aria-label="Activar">
+            <mat-icon>toggle_off</mat-icon>
+          </button>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnas()"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnas()"></tr>
+
+    <tr class="fila-vacia" *matNoDataRow>
+      <td [attr.colspan]="columnas().length">
+        @if (!cargando()) {
+          Esta zona no tiene estanterías para mostrar.
+        }
+      </td>
+    </tr>
+  </table>
+</div>

@@ -1,0 +1,32 @@
+# Normaliza los finales de línea del proyecto de forma determinística,
+# sin depender de core.autocrlf de cada máquina.
+#
+# `eol=lf` fuerza LF tanto en el repositorio como en el working tree, con lo
+# que en Windows desaparece el warning "LF will be replaced by CRLF".
+* text=auto eol=lf
+
+# --- Archivos binarios: Git no debe tocar sus finales de línea ---
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.svg  binary
+*.pdf  binary
+*.jar  binary
+*.class binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
+*.keystore binary
+
+# --- Scripts de Windows que deben conservar CRLF ---
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# --- Wrappers de Maven: el .cmd con CRLF, el shell con LF ---
+mvnw     text eol=lf
+mvnw.cmd text eol=crlf

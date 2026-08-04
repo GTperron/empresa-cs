@@ -1,0 +1,79 @@
+:host {
+  display: block;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.breadcrumb a {
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+}
+
+.breadcrumb .sep {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.titulo {
+  margin: 0;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.filtro {
+  width: 160px;
+}
+
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+.tabla {
+  width: 100%;
+}
+
+.col-acciones {
+  width: 180px;
+  text-align: right;
+}
+
+.estado {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.estado.activo {
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.estado.inactivo {
+  background: var(--mat-sys-surface-variant);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.fila-vacia td {
+  padding: 24px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}

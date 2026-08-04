@@ -1,0 +1,170 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // El fondo con imagen lo pinta `body::before` (ver más abajo); el body queda
+  // transparente para dejarlo ver. Antes usaba var(--mat-sys-surface).
+  background-color: transparent;
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
+}
+/* You can add global styles to this file, and also import other style files */
+
+/* ===========================================================================
+   FONDO GLOBAL DE LA APLICACIÓN (punto único de mantenimiento)
+   Para cambiar la imagen o el overlay, editá SOLO este bloque.
+   - La imagen vive en: frontend/public/assets/images/fondo-almacen.jpg
+     (la carpeta `public` se sirve en la raíz, por eso la URL es /assets/...).
+   - Se pinta en un pseudo-elemento `position: fixed` para que cubra el viewport
+     completo y quede fijo aunque el contenido (o el mat-sidenav-content) tenga
+     su propio scroll interno.
+   =========================================================================== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url('/assets/images/fondo-almacen.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+/* --- Dejar ver el fondo dentro del shell autenticado (mat-sidenav) ---
+   Los contenedores de Angular Material pintan su propio color de superficie por
+   encima del body; los volvemos transparentes para que se vea el fondo global.
+   El texto suelto (títulos, breadcrumbs) queda sobre el overlay oscuro, así que
+   por defecto lo mostramos claro. Las superficies con contenido (cards, tablas,
+   diálogos) recuperan su fondo sólido más abajo. */
+.mat-drawer-container {
+  background-color: transparent;
+}
+
+.mat-drawer-content {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* El panel lateral (menú) sí mantiene fondo sólido para que sea legible. */
+.mat-sidenav.mat-drawer {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+/* --- Superficies con fondo sólido propio (contraste sobre el fondo) --- */
+.mat-mdc-card,
+.mat-mdc-dialog-surface {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+/* Las tablas de las pantallas de listado se ven como un panel sólido. La clase
+   `.tabla-contenedor` la comparten los listados de Almacenes, Zonas y Estanterías. */
+.mat-drawer-content .tabla-contenedor {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  border-radius: 12px;
+  padding: 8px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.mat-mdc-table {
+  background-color: transparent;
+  color: var(--mat-sys-on-surface);
+}
+
+/* El paginador (listado de Almacenes) también sobre superficie sólida. */
+.mat-mdc-paginator {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  border-radius: 0 0 12px 12px;
+  margin-top: 4px;
+}
+
+/* Breadcrumbs legibles sobre el overlay oscuro (Zonas / Estanterías). */
+.mat-drawer-content .breadcrumb {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.mat-drawer-content .breadcrumb a {
+  color: #fff;
+}
+
+/* El filtro de estado es un control suelto sobre el overlay: le damos fondo
+   sólido para que la etiqueta y el valor sean legibles. `.filtro` la comparten
+   los listados de Almacenes, Zonas y Estanterías. */
+.mat-drawer-content .filtro .mat-mdc-text-field-wrapper {
+  background-color: var(--mat-sys-surface);
+  border-radius: 8px;
+}
+
+/* --- Layout compartido de las pantallas de autenticación --- */
+.auth-contenedor {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.auth-card .campo {
+  width: 100%;
+}
+
+.boton-enviar {
+  margin-top: 8px;
+}
+
+.error-servidor {
+  color: var(--mat-sys-error);
+  margin: 4px 0 8px;
+}
+
+/* Snackbar de error global */
+.snackbar-error {
+  --mdc-snackbar-container-color: var(--mat-sys-error-container);
+  --mdc-snackbar-supporting-text-color: var(--mat-sys-on-error-container);
+  --mat-snack-bar-button-color: var(--mat-sys-on-error-container);
+}
+

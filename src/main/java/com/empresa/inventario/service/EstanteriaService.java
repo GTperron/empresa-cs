@@ -93,6 +93,18 @@ public class EstanteriaService {
     }
 
     /**
+     * Obtiene la entidad Estanteria validando que esté activa.
+     * Reutilizado por los servicios de movimientos, transformación y venta.
+     */
+    public Estanteria obtenerEntidadActiva(Long id) {
+        Estanteria estanteria = obtenerEntidad(id);
+        if (!estanteria.getActivo()) {
+            throw new OperacionInvalidaException("La estantería " + id + " está inactiva");
+        }
+        return estanteria;
+    }
+
+    /**
      * Edita una estantería. Revalida la unicidad del código dentro de la misma zona.
      */
     public EstanteriaDTO editar(Long id, EditarEstanteriaRequest request) {

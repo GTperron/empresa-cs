@@ -1,0 +1,41 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.titulo {
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.usuario {
+  margin-right: 8px;
+  font-size: 0.9rem;
+}
+
+.contenedor {
+  flex: 1;
+}
+
+.sidenav {
+  width: 240px;
+}
+
+.contenido {
+  padding: 24px;
+}
+
+.activo {
+  background: var(--mat-sys-secondary-container);
+}

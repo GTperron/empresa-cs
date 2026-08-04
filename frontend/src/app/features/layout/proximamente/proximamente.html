@@ -1,0 +1,11 @@
+<div class="proximamente">
+  @if (titulo(); as t) {
+    <mat-icon class="icono">construction</mat-icon>
+    <h1>{{ t }}</h1>
+    <p>Este módulo estará disponible próximamente.</p>
+  } @else {
+    <mat-icon class="icono">dashboard</mat-icon>
+    <h1>Bienvenido/a</h1>
+    <p>Elegí un módulo del menú lateral para comenzar.</p>
+  }
+</div>
