@@ -167,21 +167,13 @@ switch ($opcion) {
     
     "5" {
         Write-Host "`n📖 Documentación disponible:`n" -ForegroundColor Cyan
-        Write-Host "   README.md - Guía completa del proyecto" -ForegroundColor Gray
-        Write-Host "   INSTRUCCIONES.md - Paso a paso para ejecutar" -ForegroundColor Gray
-        Write-Host "   RESUMEN_EJECUTIVO.md - Resumen y endpoints" -ForegroundColor Gray
-        Write-Host "   SCRIPTS_UTILIDAD.md - Scripts y comandos útiles" -ForegroundColor Gray
+        Write-Host "   README.md (en la raíz del repo) - Guía completa del proyecto" -ForegroundColor Gray
         Write-Host ""
-        
-        $mostrar = Read-Host "¿Deseas abrir algún archivo? (README/INSTRUCCIONES/RESUMEN/SCRIPTS/no)"
-        
-        switch ($mostrar.ToLower()) {
-            "readme" { notepad README.md }
-            "instrucciones" { notepad INSTRUCCIONES.md }
-            "resumen" { notepad RESUMEN_EJECUTIVO.md }
-            "scripts" { notepad SCRIPTS_UTILIDAD.md }
-            default { Write-Host "OK" }
-        }
+
+        $mostrar = Read-Host "¿Deseas abrir el README? (si/no)"
+
+        if ($mostrar.ToLower() -eq "si") { notepad ..\README.md }
+        else { Write-Host "OK" }
     }
     
     "6" {

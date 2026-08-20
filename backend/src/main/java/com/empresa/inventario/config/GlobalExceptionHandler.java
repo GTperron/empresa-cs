@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -202,6 +203,25 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+    }
+
+    /**
+     * Maneja denegaciones de autorización de Spring Security lanzadas a nivel de método
+     * (@PreAuthorize). Sin este handler, la AuthorizationDeniedException caería en el
+     * catch-all genérico y devolvería 500 en vez de 403.
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDenied(
+            AccessDeniedException ex, WebRequest request) {
+        log.warn("Acceso denegado (autorización): {}", ex.getMessage());
+        ApiResponse<Void> respuesta = ApiResponse.<Void>builder()
+                .exitoso(false)
+                .mensaje("Acceso denegado: no tenés permisos para realizar esta operación")
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
     }
 
     /**

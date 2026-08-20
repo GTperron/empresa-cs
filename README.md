@@ -1,438 +1,160 @@
-# Empresa CS - Sistema de Gestión de Inventario
+# Empresa CS — Sistema de Gestión de Inventario
 
-Backend de gestión de inventario/stock para negocio genérico, construido con Java 17, Spring Boot 3.x y PostgreSQL.
+Aplicación full-stack de gestión de inventario/stock.
 
-## 🚀 Quick Start
-
-### Requisitos Previos
-- **Java 17+**: [Descargar](https://www.oracle.com/java/technologies/downloads/#java17)
-- **Maven 3.8+**: [Descargar](https://maven.apache.org/download.cgi)
-- **Docker & Docker Compose**: [Descargar](https://www.docker.com/products/docker-desktop)
-- **Git**: [Descargar](https://git-scm.com/downloads)
-
-### Instalación
-
-#### 1. Clonar o descargar el proyecto
-```bash
-cd c:\Users\gtper\empresa-cs
-```
-
-#### 2. Levantar PostgreSQL con Docker
-```bash
-docker-compose up -d
-```
-
-Esto levantará:
-- **PostgreSQL**: `localhost:5432`
-- **PgAdmin**: `localhost:5050`
-
-**PgAdmin Credenciales:**
-- Email: `admin@empresa.com`
-- Password: `admin`
-
-Para conectar a PostgreSQL en PgAdmin:
-- Host: `postgres`
-- Puerto: `5432`
-- Usuario: `postgres`
-- Contraseña: `postgres`
-- Base de datos: `empresa_cs`
-
-#### 3. Configurar variables de entorno (opcional para desarrollo)
-Crear archivo `.env` en la raíz del proyecto:
-```
-JWT_SECRET=tu-secreto-super-seguro-minimo-256-caracteres-aleatorios
-MAIL_USERNAME=tu-email@gmail.com
-MAIL_PASSWORD=tu-contraseña-app-gmail
-```
-
-#### 4. Compilar el proyecto
-```bash
-mvn clean package
-```
-
-#### 5. Ejecutar la aplicación
-```bash
-mvn spring-boot:run
-```
-
-La API estará disponible en: `http://localhost:8080/api`
-
-Documentación interactiva (Swagger): `http://localhost:8080/api/swagger-ui.html`
+- **Backend**: Java 17 + Spring Boot 3.2.3 + PostgreSQL 16 (API REST en `http://localhost:8080/api`).
+- **Frontend**: Angular 22 + Angular Material (SPA en `http://localhost:4200`).
 
 ---
 
-## 📊 Diagrama de Base de Datos
+## Stack
 
-### Tablas Principales
-
-```
-┌─────────────────────┐
-│       USUARIO       │
-├─────────────────────┤
-│ id (PK)             │
-│ email (UNIQUE)      │
-│ password_hash       │
-│ nombre              │
-│ apellido            │
-│ activo              │
-│ ultimo_login        │
-│ created_at          │
-│ updated_at          │
-└─────────────────────┘
-         │
-         │ M2M
-         │
-    ┌────┴────┐
-    │          │
-    ▼          ▼
-
-┌──────────────────────┐    ┌─────────────┐
-│   USUARIO_ROL        │    │     ROL     │
-├──────────────────────┤    ├─────────────┤
-│ usuario_id (PK/FK)   │───▶│ id (PK)     │
-│ rol_id (PK/FK)       │    │ nombre (UK) │
-└──────────────────────┘    │ descripcion │
-                            │ activo      │
-                            │ created_at  │
-                            │ updated_at  │
-                            └─────────────┘
-
-┌──────────────────────────┐
-│   REFRESH_TOKEN          │
-├──────────────────────────┤
-│ id (PK)                  │
-│ usuario_id (FK)          │
-│ token (UNIQUE)           │
-│ expiracion               │
-│ revocado                 │
-│ created_at               │
-└──────────────────────────┘
-
-┌──────────────────────────┐
-│ PASSWORD_RESET_TOKEN     │
-├──────────────────────────┤
-│ id (PK)                  │
-│ usuario_id (FK)          │
-│ token (UNIQUE)           │
-│ expiracion               │
-│ utilizado                │
-│ created_at               │
-└──────────────────────────┘
-```
+| Capa | Tecnologías |
+|------|-------------|
+| Backend | Java 17, Spring Boot 3.2.3 (Web, Data JPA, Security), Hibernate, Flyway, JWT (jjwt 0.12.3), Bean Validation, Lombok, Springdoc OpenAPI 2.4.0 |
+| Base de datos | PostgreSQL 16 (Docker) |
+| Frontend | Angular 22, Angular Material, Signals, RxJS, TypeScript |
+| Build / infra | Maven, npm, Docker Compose |
 
 ---
 
-## 🔐 Autenticación JWT
+## Requisitos previos
 
-### Flujo de Autenticación
-
-```
-1. POST /api/auth/registro o /api/auth/login
-   Request: { email, password }
-   Response: { accessToken, refreshToken, expiresIn, usuario }
-
-2. Guardar tokens en cliente (preferible: sessionStorage para accessToken)
-
-3. En cada request protegido:
-   Header: Authorization: Bearer <accessToken>
-
-4. Cuando accessToken expira (15-30 min):
-   POST /api/auth/refresh
-   Request: { refreshToken }
-   Response: { accessToken (nuevo), refreshToken, expiresIn, usuario }
-
-5. Si refreshToken expira o se revoca:
-   Redirigir a login
-```
-
-### Token Claims (JWT)
-- `sub`: Email del usuario
-- `id`: ID del usuario en BD
-- `roles`: Roles asignados (ej: "ROLE_USER,ROLE_ADMIN")
-- `nombre`: Nombre del usuario
-- `apellido`: Apellido del usuario
-- `iat`: Emitido en (timestamp)
-- `exp`: Expira en (timestamp)
+- **Java 17+** y **Maven 3.8+** (backend)
+- **Node.js 20+** y **Angular CLI 22** (frontend)
+- **Docker + Docker Compose** (PostgreSQL)
 
 ---
 
-## 📡 Endpoints Principales (Módulo 1)
+## Puesta en marcha
 
-### Autenticación
+### 1. Base de datos (Docker)
 
-```http
-POST /api/auth/registro
-Content-Type: application/json
-
-{
-  "email": "usuario@ejemplo.com",
-  "password": "miContraseña123!",
-  "passwordConfirmacion": "miContraseña123!",
-  "nombre": "Juan",
-  "apellido": "Pérez"
-}
+```bash
+cd backend
+docker-compose up -d      # PostgreSQL en :5432, PgAdmin en :5050
 ```
 
-```http
-POST /api/auth/login
-Content-Type: application/json
+PgAdmin: `http://localhost:5050` (`admin@empresa.com` / `admin`). Conexión al server: host `postgres`, puerto `5432`, usuario/clave `postgres`, base `empresa_cs`.
 
-{
-  "email": "usuario@ejemplo.com",
-  "password": "miContraseña123!"
-}
+### 2. Backend
+
+Variables opcionales (crear `backend/.env` a partir de `backend/.env.example`, o exportarlas). En desarrollo hay valores por defecto:
+
+```
+JWT_SECRET=un-secreto-de-al-menos-256-bits
+MAIL_USERNAME=tu-email@gmail.com   # solo para recuperación de contraseña
+MAIL_PASSWORD=tu-app-password
 ```
 
-```http
-POST /api/auth/refresh
-Content-Type: application/json
-
-{
-  "refreshToken": "token-aqui"
-}
+```bash
+cd backend
+mvn clean package          # compilar (agregar -DskipTests para omitir tests)
+mvn spring-boot:run        # levantar API
 ```
 
-### Perfil de Usuario
+- API: `http://localhost:8080/api`
+- Swagger UI: `http://localhost:8080/api/swagger-ui.html`
 
-```http
-GET /api/usuarios/perfil
-Authorization: Bearer <accessToken>
+Flyway aplica automáticamente las migraciones `V1`–`V6` al iniciar (`ddl-auto: validate`).
+
+### 3. Frontend
+
+```bash
+cd frontend
+npm install
+npm start                  # ng serve en http://localhost:4200
 ```
 
-```http
-PUT /api/usuarios/perfil
-Authorization: Bearer <accessToken>
-Content-Type: application/json
-
-{
-  "nombre": "Juan Carlos",
-  "apellido": "Pérez García"
-}
-```
-
-### Cambiar Contraseña
-
-```http
-PUT /api/usuarios/cambiar-contrasena
-Authorization: Bearer <accessToken>
-Content-Type: application/json
-
-{
-  "contrasenaActual": "vieja123",
-  "nuevaContrasena": "nueva456",
-  "confirmacion": "nueva456"
-}
-```
-
-### Recuperación de Contraseña
-
-```http
-POST /api/auth/recuperar-contrasena
-Content-Type: application/json
-
-{
-  "email": "usuario@ejemplo.com"
-}
-```
-
-```http
-POST /api/auth/restablecer-contrasena
-Content-Type: application/json
-
-{
-  "token": "token-de-recuperacion",
-  "nuevaContrasena": "nueva789",
-  "confirmacion": "nueva789"
-}
-```
-
-### Logout
-
-```http
-POST /api/usuarios/logout
-Authorization: Bearer <accessToken>
-Content-Type: application/json
-
-{
-  "refreshToken": "token-aqui"
-}
-```
+El proxy de desarrollo (`frontend/proxy.conf.json`) redirige `/api` → `http://localhost:8080`, evitando problemas de CORS.
 
 ---
 
-## 🗂️ Estructura del Proyecto
+## Módulos implementados
+
+### Backend
+
+1. **Usuarios y seguridad** — registro/login, JWT (access 15 min + refresh 30 días), roles `USER`/`ADMIN`, perfil, cambio y recuperación de contraseña, logout.
+2. **Estructura de almacenamiento** — Almacén → Zona → Estantería (jerárquico, soft delete, código único por padre).
+3. **Productos y stock** — productos (`ENTRADA`/`VENTA`), stock por estantería con bloqueo pesimista, movimientos `ENTRADA`/`TRASLADO`/`AJUSTE`, transformaciones y ventas (`SALIDA_VENTA`), historial de movimientos.
+
+### Frontend
+
+- Autenticación (login, registro, recuperar contraseña) con interceptor de refresh automático en 401.
+- Shell autenticado con guardias `authGuard` / `roleGuard`.
+- ABM de **Almacenes**, **Zonas** y **Estanterías** (tablas Material, diálogos de alta/edición, controles de escritura solo para ADMIN, manejo específico de errores 409).
+
+---
+
+## Endpoints principales
+
+Todos bajo el prefijo `/api`. Detalle completo e interactivo en Swagger.
+
+| Área | Endpoints |
+|------|-----------|
+| Auth | `POST /auth/registro`, `/auth/login`, `/auth/refresh`, `/auth/recuperar-contrasena`, `/auth/restablecer-contrasena` |
+| Usuarios | `GET/PUT /usuarios/perfil`, `PUT /usuarios/cambiar-contrasena`, `POST /usuarios/logout` |
+| Almacenes | `GET/POST /almacenes`, `GET/PUT /almacenes/{id}`, `PATCH /almacenes/{id}/activar` y `/desactivar` |
+| Zonas | `GET/POST /almacenes/{almacenId}/zonas`, `GET/PUT /zonas/{id}`, `PATCH /zonas/{id}/activar` y `/desactivar` |
+| Estanterías | `GET/POST /zonas/{zonaId}/estanterias`, `GET/PUT /estanterias/{id}`, `PATCH /estanterias/{id}/activar` y `/desactivar` |
+| Productos | `GET/POST /productos`, `GET/PUT /productos/{id}`, `PATCH /productos/{id}/activar` y `/desactivar` |
+| Stock | `GET /stock`, `GET /stock/producto/{productoId}` |
+| Movimientos | `POST /movimientos/entrada`, `/traslado`, `/ajuste`, `GET /movimientos` |
+| Transformaciones | `GET/POST /transformaciones`, `GET /transformaciones/{id}` |
+| Ventas | `GET/POST /ventas`, `GET /ventas/{id}` |
+
+Formato de respuesta uniforme: `{ exitoso, mensaje, data, timestamp }`. Los errores de validación devuelven `data` como mapa `{ campo: mensaje }`.
+
+---
+
+## Estructura del repositorio
 
 ```
 empresa-cs/
-├── src/
-│   ├── main/
-│   │   ├── java/com/empresa/inventario/
-│   │   │   ├── InventarioApplication.java
-│   │   │   ├── config/
-│   │   │   │   ├── SecurityConfig.java
-│   │   │   │   ├── GlobalExceptionHandler.java
-│   │   │   │   └── OpenApiConfig.java
-│   │   │   ├── controller/
-│   │   │   │   ├── AutenticacionController.java
-│   │   │   │   └── UsuarioController.java
-│   │   │   ├── service/
-│   │   │   │   ├── AutenticacionService.java
-│   │   │   │   ├── UsuarioService.java
-│   │   │   │   └── RecuperacionContrasenaService.java
-│   │   │   ├── entity/
-│   │   │   │   ├── Usuario.java
-│   │   │   │   ├── Rol.java
-│   │   │   │   ├── RefreshToken.java
-│   │   │   │   └── PasswordResetToken.java
-│   │   │   ├── dto/
-│   │   │   │   ├── LoginRequest.java
-│   │   │   │   ├── RegistroRequest.java
-│   │   │   │   ├── AuthResponse.java
-│   │   │   │   ├── UsuarioDTO.java
-│   │   │   │   └── ... más DTOs
-│   │   │   ├── repository/
-│   │   │   │   ├── UsuarioRepository.java
-│   │   │   │   ├── RolRepository.java
-│   │   │   │   ├── RefreshTokenRepository.java
-│   │   │   │   └── PasswordResetTokenRepository.java
-│   │   │   ├── security/
-│   │   │   │   ├── JwtProvider.java
-│   │   │   │   ├── JwtAuthenticationFilter.java
-│   │   │   │   ├── UsuarioUserDetails.java
-│   │   │   │   └── UsuarioUserDetailsService.java
-│   │   │   ├── exception/
-│   │   │   │   ├── RecursoNoEncontradoException.java
-│   │   │   │   ├── RecursoYaExisteException.java
-│   │   │   │   ├── AutenticacionFallidaException.java
-│   │   │   │   ├── TokenInvalidoException.java
-│   │   │   │   └── AccesoDenegadoException.java
-│   │   │   └── validator/
-│   │   └── resources/
-│   │       ├── application.yml
-│   │       ├── application-dev.yml
-│   │       └── db/migration/
-│   │           ├── V1__Crear_tablas_iniciales.sql
-│   │           ├── V2__Crear_tabla_refresh_token.sql
-│   │           └── V3__Crear_tabla_password_reset_token.sql
-│   └── test/java/
-├── pom.xml
-├── docker-compose.yml
-├── .gitignore
+├── backend/                                     # API Spring Boot
+│   ├── src/main/java/com/empresa/inventario/    # controller, service, repository, entity, dto, security, exception
+│   ├── src/main/resources/
+│   │   ├── application.yml / application-dev.yml
+│   │   └── db/migration/                        # V1..V6 (Flyway)
+│   ├── src/test/java/...                        # tests unitarios (JUnit + Mockito)
+│   ├── docker-compose.yml                       # PostgreSQL + PgAdmin
+│   ├── .env.example
+│   └── pom.xml
+├── frontend/                                    # SPA Angular (ver frontend/README.md)
 └── README.md
 ```
 
 ---
 
-## 🔧 Configuración
+## Testing
 
-### application.yml
-Configuración general de la aplicación:
-- Perfiles: `dev` (por defecto)
-- JPA/Hibernate
-- Jackson (JSON)
-- Mail (SMTP)
-- JWT (secreto, tiempos de expiración)
-
-### application-dev.yml
-Configuración específica para desarrollo:
-- Conexión local a PostgreSQL
-- Logs en DEBUG
-- Flyway habilitado
-
-### Variables de Entorno
 ```bash
-# JWT
-JWT_SECRET=tu-secreto-super-seguro
-
-# Mail (opcional, para recuperación de contraseña)
-MAIL_USERNAME=tu-email@gmail.com
-MAIL_PASSWORD=contraseña-app-gmail
+cd backend && mvn test   # tests unitarios del backend
+cd frontend && ng test   # tests del frontend (Vitest)
 ```
 
 ---
 
-## 🧪 Testing
+## Troubleshooting
 
-Próximamente se agregarán tests unitarios e integración.
-
-```bash
-# Ejecutar tests
-mvn test
-
-# Tests con cobertura
-mvn clean test jacoco:report
-```
+| Problema | Solución |
+|----------|----------|
+| PostgreSQL no conecta | `docker ps` y, si hace falta, `docker-compose up -d` |
+| Puerto 5432/8080 ocupado | Cambiar el puerto en `docker-compose.yml` / `application.yml`, o liberar el proceso con `netstat -ano` + `taskkill /PID <pid> /F` |
+| Migración Flyway falla (solo dev) | `docker-compose down -v && docker-compose up -d` para recrear la base |
+| CORS al llamar la API desde el front | Usar `npm start` (proxy `/api`), no abrir el build directo contra `:8080` |
+| Dependencias Maven no bajan | `mvn dependency:resolve -U` |
 
 ---
 
-## 📝 Próximos Módulos
+## Convenciones
 
-- **Módulo 2**: Gestión de Productos (CRUD, búsqueda, filtros)
-- **Módulo 3**: Gestión de Stock/Movimientos (entrada, salida, ajustes)
-- **Módulo 4**: Categorías, Proveedores, Clientes
-- **Módulo 5**: Reportes y Analytics
-- **Módulo 6**: Auditoría y Logs
-
----
-
-## 🐛 Solución de Problemas
-
-### "Connection refused" en PostgreSQL
-```bash
-# Verificar que Docker está ejecutando
-docker ps
-
-# Reiniciar contenedores
-docker-compose restart
-```
-
-### "JWT Secret not configured"
-```bash
-# Asegúrate de que application.yml tiene la configuración
-# O establece la variable de entorno JWT_SECRET
-export JWT_SECRET=tu-secreto-aqui
-```
-
-### Error "Flyway migration failed"
-```bash
-# Limpiar migraciones (solo desarrollo)
-docker exec empresa_cs_postgres psql -U postgres -d empresa_cs -c "DROP SCHEMA IF EXISTS flyway_schema_history CASCADE;"
-```
+- Clases `PascalCase`, métodos `camelCase`, constantes `UPPER_SNAKE_CASE`.
+- DTOs de request: `<Entidad><Operación>Request`.
+- Servicios transaccionales (`@Transactional`), validación con `@Valid`, roles con `@PreAuthorize`.
+- Excepciones mapeadas a HTTP en `GlobalExceptionHandler`.
+- Finales de línea normalizados a LF vía `.gitattributes`.
 
 ---
 
-## 📚 Referencias
-
-- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [Spring Security + JWT](https://spring.io/guides/gs/securing-web/)
-- [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
-- [Flyway Database Migrations](https://flywaydb.org/)
-- [JWT.io](https://jwt.io/)
-- [Swagger/OpenAPI](https://springdoc.org/)
-
----
-
-## 📄 Licencia
-
-Este proyecto es privado y solo para uso interno de Empresa CS.
-
----
-
-## ✍️ Notas de Desarrollo
-
-### Convenciones de Código
-- Nombrado de clases: `PascalCase`
-- Métodos: `camelCase`
-- Constantes: `UPPER_SNAKE_CASE`
-- DTOs: `<Entidad><Operación>Request/Response`
-
-### Best Practices
-- Siempre usar `@Transactional` en servicios
-- Validar entrada con `@Valid` en controladores
-- Mapear excepciones a códigos HTTP apropiados
-- Documentar endpoints con Swagger
-
----
-
-**Última actualización**: 2026-07-14
-**Versión**: 1.0.0
+Proyecto privado para uso interno de Empresa CS.
