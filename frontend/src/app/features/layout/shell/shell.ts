@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,10 +30,18 @@ interface NavItem {
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
 })
-export class Shell {
+export class Shell implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
 
   readonly usuario = this.authService.currentUser;
+
+  ngOnInit(): void {
+    document.body.classList.add('app-shell');
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('app-shell');
+  }
 
   // Placeholders de los módulos que se irán implementando; por ahora van a "Próximamente".
   readonly navItems: NavItem[] = [

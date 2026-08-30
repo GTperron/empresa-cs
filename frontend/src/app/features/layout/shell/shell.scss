@@ -8,11 +8,15 @@
   position: sticky;
   top: 0;
   z-index: 2;
+  box-shadow: 0 2px 8px rgba(61, 46, 31, 0.18);
 }
 
 .titulo {
   margin-left: 8px;
-  font-weight: 500;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
 }
 
 .spacer {
@@ -20,8 +24,10 @@
 }
 
 .usuario {
-  margin-right: 8px;
-  font-size: 0.9rem;
+  margin-right: 12px;
+  font-size: var(--app-font-body, 1.0625rem);
+  font-weight: 500;
+  opacity: 0.95;
 }
 
 .contenedor {
@@ -29,13 +35,44 @@
 }
 
 .sidenav {
-  width: 240px;
+  width: 260px;
+  border-right: var(--app-border, 2px solid #9a8472);
+  background-color: var(--mat-sys-secondary-container) !important; /* #E8DFD0 */
+  box-shadow: 2px 0 12px rgba(61, 46, 31, 0.08);
 }
 
 .contenido {
-  padding: 24px;
+  padding: 28px 32px;
+  min-height: calc(100vh - 64px);
 }
 
-.activo {
-  background: var(--mat-sys-secondary-container);
+// Ítems de navegación — inactivos sobre fondo secondary-container
+:host ::ng-deep .mat-mdc-nav-list .mat-mdc-list-item {
+  border-radius: 0 24px 24px 0;
+  margin: 2px 8px 2px 0;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+
+  .mdc-list-item__primary-text {
+    font-weight: 500;
+    font-size: var(--app-font-body, 1.0625rem);
+    color: var(--mat-sys-on-secondary-container); /* #3D2E1F */
+  }
+}
+
+// Activo: panel claro (#FAF7F2) que contrasta con el sidenav beige
+:host ::ng-deep .mat-mdc-nav-list .mat-mdc-list-item.activo {
+  background-color: var(--mat-sys-surface);
+  border-left: 3px solid var(--app-accent);
+  box-shadow: 0 1px 4px rgba(61, 46, 31, 0.1);
+
+  .mdc-list-item__primary-text {
+    color: var(--mat-sys-on-surface);
+    font-weight: 700;
+  }
+}
+
+:host ::ng-deep .mat-mdc-nav-list .mat-mdc-list-item:hover:not(.activo) {
+  background-color: rgba(111, 78, 55, 0.1);
 }

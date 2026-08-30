@@ -1,10 +1,5 @@
 form {
   display: flex;
   flex-direction: column;
-  padding-top: 8px;
-  min-width: 320px;
-}
-
-.campo {
-  width: 100%;
+  min-width: min(360px, 90vw);
 }

@@ -1,100 +1,219 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+// =============================================================================
+// Parchment Warm — tema global, fondos, tipografía y componentes
+// =============================================================================
 @use '@angular/material' as mat;
 
+// Paleta base cálida (Material genera tokens; luego afinamos con overrides).
 html {
   height: 100%;
+
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
+        primary: mat.$orange-palette,
+        tertiary: mat.$orange-palette,
       ),
-      typography: Roboto,
+      typography: (
+        brand-family: 'Manrope',
+        plain-family: 'Source Sans 3',
+        bold-weight: 800,
+        medium-weight: 600,
+        regular-weight: 400,
+      ),
       density: 0,
+    )
+  );
+
+  @include mat.theme-overrides(
+    (
+      primary: #6f4e37,
+      on-primary: #fffbf7,
+      primary-container: #ede0d0,
+      on-primary-container: #3d2e1f,
+      secondary: #9a8472,
+      on-secondary: #fffbf7,
+      secondary-container: #e8dfd0,
+      on-secondary-container: #3d2e1f,
+      tertiary: #c17f3a,
+      on-tertiary: #fffbf7,
+      tertiary-container: #f5e6d3,
+      on-tertiary-container: #3d2e1f,
+      surface: #faf7f2,
+      on-surface: #3d2e1f,
+      surface-variant: #f0e8dc,
+      on-surface-variant: #5c4a38,
+      outline: #c4b5a0,
+      outline-variant: #d9cdb8,
+      error: #b54a4a,
+      on-error: #fffbf7,
+      error-container: #fde8e8,
+      on-error-container: #7a2e2e,
+      background: #faf7f2,
+      on-background: #3d2e1f,
+    )
+  );
+
+  // Bordes redondeados consistentes
+  @include mat.theme-overrides(
+    (
+      corner-extra-small: 6px,
+      corner-small: 8px,
+      corner-medium: 12px,
+      corner-large: 16px,
     )
   );
 }
 
+// Tokens de app (fuera de Material)
+:root {
+  --app-accent: #c17f3a;
+  --app-accent-hover: #a86b2e;
+  --app-success: #5a7248;
+  --app-success-container: #e8f0e4;
+  --app-shadow-soft: 0 2px 12px rgba(61, 46, 31, 0.1);
+  --app-shadow-panel: 0 4px 24px rgba(61, 46, 31, 0.14);
+  --app-shadow-auth: 0 12px 40px rgba(61, 46, 31, 0.28);
+
+  // Tipografía — escala ampliada (jerarquía relativa mantenida)
+  --app-font-title-page: 2.125rem; // ~34px — títulos de página
+  --app-font-title-section: 1.625rem; // ~26px — diálogos, h2
+  --app-font-body: 1.0625rem; // ~17px — cuerpo y celdas
+  --app-font-table-header: 0.875rem; // ~14px — encabezados de tabla
+  --app-font-label: 1rem; // ~16px — labels de formulario
+  --app-font-small: 0.9375rem; // ~15px — breadcrumbs, chips
+
+  // Bordes más marcados (color de la paleta, sin cambiar tokens de tema)
+  --app-border-color: #9a8472;
+  --app-border-width: 2px;
+  --app-border: 2px solid #9a8472;
+
+  // Overlay del shell — baja opacidad para que la foto sepia se vea;
+  // cards/tablas mantienen fondo sólido propio.
+  --app-shell-overlay-top: rgba(250, 247, 242, 0.32);
+  --app-shell-overlay-bottom: rgba(245, 238, 228, 0.4);
+
+  // Legibilidad de títulos sobre foto visible
+  --app-title-shadow: 0 1px 3px rgba(250, 247, 242, 0.9), 0 0 8px rgba(250, 247, 242, 0.55);
+
+  // Íconos — sistema centralizado (Parchment Warm)
+  --app-icon-color: #3d2e1f; // on-surface: decorativos sobre fondos claros
+  --app-icon-action-color: #6f4e37; // primary: botones de ícono, nav inactivo
+  --app-icon-action-hover: #3d2e1f; // hover en acciones interactivas
+  --app-icon-active-color: #c17f3a; // accent: ítem sidenav activo
+  --app-icon-on-primary: #fffbf7; // on-primary: toolbar y botones primary
+}
+
+// =============================================================================
+// Base tipográfica
+// =============================================================================
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
-
-  // El fondo con imagen lo pinta `body::before` (ver más abajo); el body queda
-  // transparente para dejarlo ver. Antes usaba var(--mat-sys-surface).
   background-color: transparent;
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
+  color: var(--mat-sys-on-background);
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 400;
+  font-size: var(--app-font-body);
+  line-height: 1.5;
   margin: 0;
   height: 100%;
+  -webkit-font-smoothing: antialiased;
 }
-/* You can add global styles to this file, and also import other style files */
 
-/* ===========================================================================
-   FONDO GLOBAL DE LA APLICACIÓN (punto único de mantenimiento)
-   Para cambiar la imagen o el overlay, editá SOLO este bloque.
-   - La imagen vive en: frontend/public/assets/images/fondo-almacen.jpg
-     (la carpeta `public` se sirve en la raíz, por eso la URL es /assets/...).
-   - Se pinta en un pseudo-elemento `position: fixed` para que cubra el viewport
-     completo y quede fijo aunque el contenido (o el mat-sidenav-content) tenga
-     su propio scroll interno.
-   =========================================================================== */
-body::before {
+h1,
+h2,
+h3,
+.mat-mdc-card-title,
+[mat-dialog-title] {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  color: var(--mat-sys-on-surface);
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: var(--app-font-title-page);
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: var(--app-font-title-section);
+  line-height: 1.25;
+}
+
+// =============================================================================
+// Fondos — punto único de mantenimiento
+// Imagen: frontend/public/assets/images/fondo-almacen.jpg
+// ::before = imagen  |  ::after = overlay
+// =============================================================================
+body::before,
+body::after {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: -1;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url('/assets/images/fondo-almacen.jpg');
+  pointer-events: none;
+}
+
+body::before {
+  z-index: -2;
+  background-image: url('/assets/images/fondo-almacen.jpg');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
 }
 
-/* --- Dejar ver el fondo dentro del shell autenticado (mat-sidenav) ---
-   Los contenedores de Angular Material pintan su propio color de superficie por
-   encima del body; los volvemos transparentes para que se vea el fondo global.
-   El texto suelto (títulos, breadcrumbs) queda sobre el overlay oscuro, así que
-   por defecto lo mostramos claro. Las superficies con contenido (cards, tablas,
-   diálogos) recuperan su fondo sólido más abajo. */
-.mat-drawer-container {
-  background-color: transparent;
+body::after {
+  z-index: -1;
+}
+
+/* Auth: imagen a color + overlay oscuro cálido */
+body:not(.app-shell)::after {
+  background: linear-gradient(rgba(61, 46, 31, 0.55), rgba(61, 46, 31, 0.55));
+}
+
+/* Shell autenticado: sepia + overlay crema claro */
+body.app-shell::before {
+  filter: sepia(75%) saturate(0.85) brightness(1.08);
+}
+
+body.app-shell::after {
+  background: linear-gradient(
+    var(--app-shell-overlay-top),
+    var(--app-shell-overlay-bottom)
+  );
+}
+
+// =============================================================================
+// Shell autenticado — dejar ver el fondo (todas las rutas bajo /app)
+// =============================================================================
+.mat-sidenav-container,
+.mat-drawer-container,
+.mat-drawer-content {
+  background-color: transparent !important;
 }
 
 .mat-drawer-content {
-  background-color: transparent;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--mat-sys-on-background);
 }
 
-/* El panel lateral (menú) sí mantiene fondo sólido para que sea legible. */
-.mat-sidenav.mat-drawer {
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-}
-
-/* --- Superficies con fondo sólido propio (contraste sobre el fondo) --- */
+// =============================================================================
+// Superficies sólidas (contraste sobre fondo con imagen)
+// =============================================================================
 .mat-mdc-card,
 .mat-mdc-dialog-surface {
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
+  border: var(--app-border);
+  box-shadow: var(--app-shadow-soft);
 }
 
-/* Las tablas de las pantallas de listado se ven como un panel sólido. La clase
-   `.tabla-contenedor` la comparten los listados de Almacenes, Zonas y Estanterías. */
-.mat-drawer-content .tabla-contenedor {
+.tabla-contenedor {
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
+  border: var(--app-border);
   border-radius: 12px;
-  padding: 8px 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  padding: 10px 18px 14px;
+  box-shadow: var(--app-shadow-panel);
+  overflow-x: auto;
 }
 
 .mat-mdc-table {
@@ -102,69 +221,356 @@ body::before {
   color: var(--mat-sys-on-surface);
 }
 
-/* El paginador (listado de Almacenes) también sobre superficie sólida. */
 .mat-mdc-paginator {
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
+  border: var(--app-border);
+  border-top: none;
   border-radius: 0 0 12px 12px;
-  margin-top: 4px;
+  margin-top: -2px;
+  box-shadow: var(--app-shadow-soft);
+  font-size: var(--app-font-body);
 }
 
-/* Breadcrumbs legibles sobre el overlay oscuro (Zonas / Estanterías). */
-.mat-drawer-content .breadcrumb {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.mat-drawer-content .breadcrumb a {
-  color: #fff;
-}
-
-/* El filtro de estado es un control suelto sobre el overlay: le damos fondo
-   sólido para que la etiqueta y el valor sean legibles. `.filtro` la comparten
-   los listados de Almacenes, Zonas y Estanterías. */
-.mat-drawer-content .filtro .mat-mdc-text-field-wrapper {
+// Filtros e inputs — borde más visible
+.filtro .mat-mdc-text-field-wrapper {
   background-color: var(--mat-sys-surface);
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
-/* --- Layout compartido de las pantallas de autenticación --- */
+.mat-mdc-form-field .mat-mdc-text-field-wrapper {
+  font-size: var(--app-font-body);
+}
+
+.mat-mdc-form-field .mdc-floating-label,
+.mat-mdc-form-field .mat-mdc-floating-label {
+  font-size: var(--app-font-label);
+}
+
+.mat-mdc-form-field.mat-form-field-appearance-outline {
+  --mdc-outlined-text-field-outline-width: 2px;
+  --mdc-outlined-text-field-focus-outline-width: 2px;
+  --mdc-outlined-text-field-hover-outline-color: var(--app-border-color);
+  --mdc-outlined-text-field-outline-color: var(--app-border-color);
+  --mdc-outlined-text-field-focus-outline-color: var(--mat-sys-primary);
+}
+
+// =============================================================================
+// Botones
+// =============================================================================
+.mat-mdc-unelevated-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button {
+  border-radius: 10px !important;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  font-size: var(--app-font-label);
+}
+
+.mat-mdc-outlined-button:not(:disabled) {
+  border-color: var(--mat-sys-outline);
+}
+
+// CTAs de listado (Nuevo almacén / zona / estantería) — acento cobre
+.encabezado .mat-mdc-unelevated-button.mat-primary {
+  --mat-button-filled-container-color: var(--app-accent);
+  --mat-button-filled-label-text-color: #fffbf7;
+
+  &:hover:not(:disabled) {
+    --mat-button-filled-container-color: var(--app-accent-hover);
+  }
+}
+
+// =============================================================================
+// Tablas — selectores bajo .tabla-contenedor para ganar especificidad a Material
+// =============================================================================
+.tabla-contenedor .mat-mdc-header-row {
+  background-color: var(--mat-sys-surface-variant);
+  border-bottom: var(--app-border);
+}
+
+.tabla-contenedor .mat-mdc-header-cell {
+  color: var(--mat-sys-on-surface);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: var(--app-font-table-header) !important;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+.tabla-contenedor .mat-mdc-row {
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(111, 78, 55, 0.06);
+  }
+}
+
+.tabla-contenedor .mat-mdc-cell {
+  color: var(--mat-sys-on-surface);
+  font-size: var(--app-font-body) !important;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+  border-bottom: 1.5px solid var(--app-border-color);
+}
+
+// Fallback global (tablas fuera de .tabla-contenedor, por si acaso)
+.mat-mdc-header-row {
+  background-color: var(--mat-sys-surface-variant);
+  border-bottom: var(--app-border);
+}
+
+.mat-mdc-header-cell {
+  color: var(--mat-sys-on-surface);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: var(--app-font-table-header);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+.mat-mdc-row {
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(111, 78, 55, 0.06);
+  }
+}
+
+.mat-mdc-cell {
+  color: var(--mat-sys-on-surface);
+  font-size: var(--app-font-body);
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+  border-bottom: 1.5px solid var(--app-border-color);
+}
+
+.fila-vacia td {
+  padding: 28px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// Chips de estado
+.estado {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: var(--app-font-small);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.estado.activo {
+  background: var(--app-success-container);
+  color: var(--app-success);
+}
+
+.estado.inactivo {
+  background: var(--mat-sys-surface-variant);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// =============================================================================
+// Encabezados de página y breadcrumbs
+// =============================================================================
+.encabezado {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.encabezado .titulo {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: var(--app-font-title-page) !important;
+  font-weight: 800;
+  color: var(--mat-sys-on-background);
+  text-shadow: var(--app-title-shadow);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+  font-size: var(--app-font-small);
+  color: var(--mat-sys-on-surface-variant);
+  text-shadow: var(--app-title-shadow);
+}
+
+// Títulos sueltos sobre el fondo (Próximamente, etc.)
+.mat-drawer-content h1 {
+  text-shadow: var(--app-title-shadow);
+}
+
+.breadcrumb a {
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover {
+    color: var(--app-accent);
+    text-decoration: underline;
+  }
+}
+
+// =============================================================================
+// Formularios y diálogos
+// =============================================================================
+.mat-mdc-dialog-content {
+  padding-top: 8px !important;
+}
+
+.mat-mdc-dialog-content form,
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.campo {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  margin-bottom: 4px;
+}
+
+.mat-mdc-dialog-actions {
+  padding: 12px 24px 20px !important;
+  gap: 8px;
+}
+
+// =============================================================================
+// Auth (login / registro / recuperar contraseña)
+// =============================================================================
 .auth-contenedor {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 24px 16px;
   box-sizing: border-box;
 }
 
 .auth-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
+  border-radius: 16px !important;
+  box-shadow: var(--app-shadow-auth) !important;
+  border: var(--app-border) !important;
+  overflow: hidden;
 }
 
-.auth-card form {
+.auth-card .mat-mdc-card-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: var(--app-font-title-section);
+  font-weight: 800;
+}
+
+.auth-card .mat-mdc-card-subtitle {
+  color: var(--mat-sys-on-surface-variant);
+  margin-top: 4px;
+  font-size: var(--app-font-body);
+}
+
+.auth-card .boton-enviar {
+  margin-top: 12px;
+  min-height: 44px;
+}
+
+.auth-card .acciones {
   display: flex;
-  flex-direction: column;
-  margin-top: 8px;
-}
-
-.auth-card .campo {
-  width: 100%;
-}
-
-.boton-enviar {
-  margin-top: 8px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 16px 16px;
+  gap: 8px;
 }
 
 .error-servidor {
   color: var(--mat-sys-error);
   margin: 4px 0 8px;
+  font-size: 0.9rem;
 }
 
-/* Snackbar de error global */
+// =============================================================================
+// Íconos — color consistente en toda la app
+// =============================================================================
+
+// Base: íconos sobre superficies claras (tablas, cards, formularios)
+.mat-icon {
+  color: var(--app-icon-color);
+}
+
+// Botones de ícono — acciones en tablas, toggles, visibility en auth
+.mat-mdc-icon-button {
+  --mat-icon-button-icon-color: var(--app-icon-action-color);
+  --mdc-icon-button-icon-color: var(--app-icon-action-color);
+
+  .mat-icon {
+    color: var(--app-icon-action-color);
+  }
+
+  &:hover:not(:disabled) {
+    --mat-icon-button-icon-color: var(--app-icon-action-hover);
+    --mdc-icon-button-icon-color: var(--app-icon-action-hover);
+
+    .mat-icon {
+      color: var(--app-icon-action-hover);
+    }
+  }
+}
+
+// Toolbar (fondo primary #6F4E37)
+.mat-toolbar.mat-primary {
+  .mat-mdc-icon-button {
+    --mat-icon-button-icon-color: var(--app-icon-on-primary);
+    --mdc-icon-button-icon-color: var(--app-icon-on-primary);
+
+    .mat-icon {
+      color: var(--app-icon-on-primary);
+    }
+  }
+}
+
+// Íconos dentro de botones primary (ej. "add" en Nuevo almacén)
+.mat-mdc-unelevated-button.mat-primary .mat-icon,
+.mat-mdc-raised-button.mat-primary .mat-icon {
+  color: var(--app-icon-on-primary);
+}
+
+// Sidenav — nav list (centralizado; aplica a todo el shell)
+.mat-mdc-nav-list .mat-mdc-list-item .mat-icon {
+  color: var(--app-icon-action-color);
+}
+
+.mat-mdc-nav-list .mat-mdc-list-item.activo .mat-icon {
+  color: var(--app-icon-active-color);
+}
+
+// Breadcrumbs (chevrons)
+.breadcrumb .mat-icon {
+  color: var(--app-icon-action-color);
+}
+
+// Pantalla Próximamente (ícono grande)
+.proximamente .mat-icon.icono {
+  color: var(--app-icon-action-color);
+  opacity: 1;
+}
+
+// =============================================================================
+// Snackbar
+// =============================================================================
 .snackbar-error {
   --mdc-snackbar-container-color: var(--mat-sys-error-container);
   --mdc-snackbar-supporting-text-color: var(--mat-sys-on-error-container);
   --mat-snack-bar-button-color: var(--mat-sys-on-error-container);
 }
-

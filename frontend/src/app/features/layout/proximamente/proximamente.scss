@@ -5,7 +5,19 @@
   justify-content: center;
   text-align: center;
   min-height: 60vh;
+  padding: 32px;
+  color: var(--mat-sys-on-background);
+}
+
+.proximamente h1 {
+  color: var(--mat-sys-on-background);
+  margin-bottom: 8px;
+}
+
+.proximamente p {
   color: var(--mat-sys-on-surface-variant);
+  font-size: var(--app-font-body, 1.0625rem);
+  max-width: 420px;
 }
 
 .icono {
