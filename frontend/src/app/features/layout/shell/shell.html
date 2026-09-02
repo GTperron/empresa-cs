@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="toolbar">
-  <button mat-icon-button (click)="sidenav.toggle()" aria-label="Alternar menú">
+  <button mat-icon-button class="toolbar-icono" (click)="alternarMenu()" aria-label="Alternar menú">
     <mat-icon>menu</mat-icon>
   </button>
   <span class="titulo">Gestión de Inventario</span>
@@ -7,16 +7,33 @@
   @if (usuario(); as u) {
     <span class="usuario">{{ u.nombre }} {{ u.apellido }}</span>
   }
-  <button mat-icon-button (click)="logout()" matTooltip="Cerrar sesión" aria-label="Cerrar sesión">
+  <button
+    mat-icon-button
+    class="toolbar-icono"
+    (click)="logout()"
+    matTooltip="Cerrar sesión"
+    aria-label="Cerrar sesión"
+  >
     <mat-icon>logout</mat-icon>
   </button>
 </mat-toolbar>
 
 <mat-sidenav-container class="contenedor">
-  <mat-sidenav #sidenav mode="side" opened class="sidenav">
+  <mat-sidenav
+    #sidenav
+    class="sidenav"
+    [mode]="esPantallaAngosta() ? 'over' : 'side'"
+    [fixedInViewport]="esPantallaAngosta()"
+    [fixedTopGap]="esPantallaAngosta() ? toolbarMobileHeight : 0"
+  >
     <mat-nav-list>
       @for (item of navItems; track item.ruta) {
-        <a mat-list-item [routerLink]="item.ruta" routerLinkActive="activo">
+        <a
+          mat-list-item
+          [routerLink]="item.ruta"
+          routerLinkActive="activo"
+          (click)="cerrarSidenavSiMobile()"
+        >
           <mat-icon matListItemIcon>{{ item.icono }}</mat-icon>
           <span matListItemTitle>{{ item.etiqueta }}</span>
         </a>

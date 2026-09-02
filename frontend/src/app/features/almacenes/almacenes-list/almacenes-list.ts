@@ -11,6 +11,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { formDialogConfig } from '../../../shared/utils/dialog';
 import { mensajeDeError } from '../../../shared/utils/errores';
 import { AlmacenForm } from '../almacen-form/almacen-form';
 import { Almacen } from '../models/almacen.model';
@@ -115,7 +116,7 @@ export class AlmacenesList {
   }
 
   private abrirDialogo(almacen: Almacen | null): void {
-    const ref = this.dialog.open(AlmacenForm, { data: almacen, width: '480px' });
+    const ref = this.dialog.open(AlmacenForm, formDialogConfig({ data: almacen }));
     ref.afterClosed().subscribe((guardado: boolean | undefined) => {
       if (guardado) {
         this.snackBar.open(almacen ? 'Almacén actualizado' : 'Almacén creado', 'Cerrar', { duration: 3000 });

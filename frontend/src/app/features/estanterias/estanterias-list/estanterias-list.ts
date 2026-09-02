@@ -10,6 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { formDialogConfig } from '../../../shared/utils/dialog';
 import { mensajeDeError } from '../../../shared/utils/errores';
 import { AlmacenService } from '../../almacenes/services/almacen.service';
 import { ZonaService } from '../../zonas/services/zona.service';
@@ -115,10 +116,10 @@ export class EstanteriasList {
   }
 
   private abrirDialogo(estanteria: Estanteria | null): void {
-    const ref = this.dialog.open(EstanteriaForm, {
-      data: { zonaId: this.zonaId, estanteria },
-      width: '480px',
-    });
+    const ref = this.dialog.open(
+      EstanteriaForm,
+      formDialogConfig({ data: { zonaId: this.zonaId, estanteria } }),
+    );
     ref.afterClosed().subscribe((guardado: boolean | undefined) => {
       if (guardado) {
         this.snackBar.open(estanteria ? 'Estantería actualizada' : 'Estantería creada', 'Cerrar', {

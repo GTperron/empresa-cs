@@ -9,6 +9,25 @@
   top: 0;
   z-index: 2;
   box-shadow: 0 2px 8px rgba(61, 46, 31, 0.18);
+
+  // Menú y logout: mismo color de acción sobre fondo surface del toolbar (M3)
+  .mat-mdc-icon-button {
+    --mat-icon-button-icon-color: var(--app-icon-action-color);
+    --mdc-icon-button-icon-color: var(--app-icon-action-color);
+
+    .mat-icon {
+      color: var(--app-icon-action-color);
+    }
+
+    &:hover:not(:disabled) {
+      --mat-icon-button-icon-color: var(--app-icon-action-hover);
+      --mdc-icon-button-icon-color: var(--app-icon-action-hover);
+
+      .mat-icon {
+        color: var(--app-icon-action-hover);
+      }
+    }
+  }
 }
 
 .titulo {
@@ -32,10 +51,12 @@
 
 .contenedor {
   flex: 1;
+  height: 100%;
 }
 
 .sidenav {
   width: 260px;
+  max-width: 85vw;
   border-right: var(--app-border, 2px solid #9a8472);
   background-color: var(--mat-sys-secondary-container) !important; /* #E8DFD0 */
   box-shadow: 2px 0 12px rgba(61, 46, 31, 0.08);
@@ -44,6 +65,23 @@
 .contenido {
   padding: 28px 32px;
   min-height: calc(100vh - 64px);
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+@media (max-width: 767.98px) {
+  .titulo {
+    font-size: 1.05rem;
+  }
+
+  .usuario {
+    display: none;
+  }
+
+  .contenido {
+    padding: 16px;
+    min-height: calc(100vh - 56px);
+  }
 }
 
 // Ítems de navegación — inactivos sobre fondo secondary-container

@@ -1,22 +1,38 @@
 .proximamente {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
   min-height: 60vh;
-  padding: 32px;
-  color: var(--mat-sys-on-background);
+  padding: 32px 16px;
+  box-sizing: border-box;
 }
 
-.proximamente h1 {
-  color: var(--mat-sys-on-background);
-  margin-bottom: 8px;
+// Panel sólido sobre la foto variable — mismo lenguaje que tablas/cards
+.proximamente-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+  padding: 36px 40px;
+  background-color: rgba(250, 247, 242, 0.9);
+  border: var(--app-border, 2px solid #9a8472);
+  border-radius: 12px;
+  box-shadow: var(--app-shadow-panel);
 }
 
-.proximamente p {
+.proximamente-panel h1 {
+  margin: 0 0 12px;
+  color: var(--mat-sys-on-surface);
+  text-shadow: none;
+}
+
+.proximamente-panel p {
+  margin: 0;
   color: var(--mat-sys-on-surface-variant);
   font-size: var(--app-font-body, 1.0625rem);
+  line-height: 1.5;
   max-width: 420px;
 }
 
@@ -24,5 +40,6 @@
   font-size: 64px;
   width: 64px;
   height: 64px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  color: var(--app-icon-action-color);
 }

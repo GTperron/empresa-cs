@@ -10,21 +10,23 @@
   <h1 class="titulo">Estanterías</h1>
   <span class="spacer"></span>
 
-  <mat-form-field appearance="outline" class="filtro" subscriptSizing="dynamic">
-    <mat-label>Estado</mat-label>
-    <mat-select [value]="filtroActivo()" (selectionChange)="cambiarFiltro($event.value)">
-      <mat-option [value]="null">Todos</mat-option>
-      <mat-option [value]="true">Activos</mat-option>
-      <mat-option [value]="false">Inactivos</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="encabezado-controles">
+    <mat-form-field appearance="outline" class="filtro" subscriptSizing="dynamic">
+      <mat-label>Estado</mat-label>
+      <mat-select [value]="filtroActivo()" (selectionChange)="cambiarFiltro($event.value)">
+        <mat-option [value]="null">Todos</mat-option>
+        <mat-option [value]="true">Activos</mat-option>
+        <mat-option [value]="false">Inactivos</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  @if (esAdmin()) {
-    <button mat-flat-button color="primary" (click)="nuevo()">
-      <mat-icon>add</mat-icon>
-      Nueva estantería
-    </button>
-  }
+    @if (esAdmin()) {
+      <button mat-flat-button color="primary" class="btn-alta" (click)="nuevo()">
+        <mat-icon>add</mat-icon>
+        Nueva estantería
+      </button>
+    }
+  </div>
 </div>
 
 @if (cargando()) {
@@ -35,27 +37,27 @@
   <table mat-table [dataSource]="datos()" class="tabla">
     <ng-container matColumnDef="codigo">
       <th mat-header-cell *matHeaderCellDef>Código</th>
-      <td mat-cell *matCellDef="let e">{{ e.codigo }}</td>
+      <td mat-cell *matCellDef="let e" data-label="Código">{{ e.codigo }}</td>
     </ng-container>
 
     <ng-container matColumnDef="nombre">
       <th mat-header-cell *matHeaderCellDef>Nombre</th>
-      <td mat-cell *matCellDef="let e">{{ e.nombre }}</td>
+      <td mat-cell *matCellDef="let e" data-label="Nombre">{{ e.nombre }}</td>
     </ng-container>
 
     <ng-container matColumnDef="descripcion">
       <th mat-header-cell *matHeaderCellDef>Descripción</th>
-      <td mat-cell *matCellDef="let e">{{ e.descripcion || '—' }}</td>
+      <td mat-cell *matCellDef="let e" data-label="Descripción">{{ e.descripcion || '—' }}</td>
     </ng-container>
 
     <ng-container matColumnDef="capacidad">
       <th mat-header-cell *matHeaderCellDef>Capacidad máx.</th>
-      <td mat-cell *matCellDef="let e">{{ e.capacidadMaxima ?? '—' }}</td>
+      <td mat-cell *matCellDef="let e" data-label="Capacidad máx.">{{ e.capacidadMaxima ?? '—' }}</td>
     </ng-container>
 
     <ng-container matColumnDef="estado">
       <th mat-header-cell *matHeaderCellDef>Estado</th>
-      <td mat-cell *matCellDef="let e">
+      <td mat-cell *matCellDef="let e" data-label="Estado">
         <span class="estado" [class.activo]="e.activo" [class.inactivo]="!e.activo">
           {{ e.activo ? 'Activo' : 'Inactivo' }}
         </span>
@@ -64,19 +66,31 @@
 
     <ng-container matColumnDef="acciones">
       <th mat-header-cell *matHeaderCellDef class="col-acciones">Acciones</th>
-      <td mat-cell *matCellDef="let e" class="col-acciones">
-        <button mat-icon-button (click)="editar(e)" matTooltip="Editar" aria-label="Editar">
-          <mat-icon>edit</mat-icon>
-        </button>
-        @if (e.activo) {
-          <button mat-icon-button (click)="desactivar(e)" matTooltip="Desactivar" aria-label="Desactivar">
-            <mat-icon>toggle_on</mat-icon>
+      <td mat-cell *matCellDef="let e" class="col-acciones" data-label="Acciones">
+        <div class="acciones-fila">
+          <button mat-icon-button (click)="editar(e)" matTooltip="Editar estantería" aria-label="Editar estantería">
+            <mat-icon>edit</mat-icon>
           </button>
-        } @else {
-          <button mat-icon-button (click)="activar(e)" matTooltip="Activar" aria-label="Activar">
-            <mat-icon>toggle_off</mat-icon>
-          </button>
-        }
+          @if (e.activo) {
+            <button
+              mat-icon-button
+              (click)="desactivar(e)"
+              matTooltip="Desactivar estantería"
+              aria-label="Desactivar estantería"
+            >
+              <mat-icon>block</mat-icon>
+            </button>
+          } @else {
+            <button
+              mat-icon-button
+              (click)="activar(e)"
+              matTooltip="Activar estantería"
+              aria-label="Activar estantería"
+            >
+              <mat-icon>check_circle</mat-icon>
+            </button>
+          }
+        </div>
       </td>
     </ng-container>
 

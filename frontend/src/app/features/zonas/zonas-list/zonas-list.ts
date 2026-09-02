@@ -10,6 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { formDialogConfig } from '../../../shared/utils/dialog';
 import { mensajeDeError } from '../../../shared/utils/errores';
 import { AlmacenService } from '../../almacenes/services/almacen.service';
 import { ZonaForm } from '../zona-form/zona-form';
@@ -109,10 +110,10 @@ export class ZonasList {
   }
 
   private abrirDialogo(zona: Zona | null): void {
-    const ref = this.dialog.open(ZonaForm, {
-      data: { almacenId: this.almacenId, zona },
-      width: '480px',
-    });
+    const ref = this.dialog.open(
+      ZonaForm,
+      formDialogConfig({ data: { almacenId: this.almacenId, zona } }),
+    );
     ref.afterClosed().subscribe((guardado: boolean | undefined) => {
       if (guardado) {
         this.snackBar.open(zona ? 'Zona actualizada' : 'Zona creada', 'Cerrar', { duration: 3000 });
