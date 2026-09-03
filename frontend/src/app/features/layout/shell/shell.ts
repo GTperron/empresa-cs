@@ -120,8 +120,8 @@ export class Shell implements OnInit, OnDestroy {
 
   readonly navItems: NavItem[] = [
     { etiqueta: 'Almacenes', icono: 'warehouse', ruta: '/app/almacenes' },
-    { etiqueta: 'Productos', icono: 'inventory_2', ruta: '/app/proximamente/productos' },
-    { etiqueta: 'Stock', icono: 'inventory', ruta: '/app/proximamente/stock' },
+    { etiqueta: 'Productos', icono: 'inventory_2', ruta: '/app/productos' },
+    { etiqueta: 'Stock', icono: 'inventory', ruta: '/app/stock' },
     { etiqueta: 'Movimientos', icono: 'swap_horiz', ruta: '/app/proximamente/movimientos' },
     { etiqueta: 'Transformaciones', icono: 'transform', ruta: '/app/proximamente/transformaciones' },
     { etiqueta: 'Ventas', icono: 'point_of_sale', ruta: '/app/proximamente/ventas' },

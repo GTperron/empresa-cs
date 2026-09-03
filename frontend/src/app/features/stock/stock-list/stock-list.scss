@@ -1,0 +1,79 @@
+:host {
+  display: block;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.tabla {
+  width: 100%;
+}
+
+.ubicacion {
+  font-size: var(--app-font-small, 0.9375rem);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.producto-linea {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.producto-codigo {
+  font-weight: 600;
+  font-size: var(--app-font-body, 1.0625rem);
+}
+
+.producto-nombre {
+  font-size: var(--app-font-small, 0.9375rem);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.mensaje-vacio {
+  padding: 8px 0;
+  line-height: 1.45;
+}
+
+.aviso-solo-lectura {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background-color: color-mix(in srgb, var(--app-icon-action-color) 82%, #2a1f14);
+  border: 1px solid color-mix(in srgb, var(--app-icon-action-color) 55%, transparent);
+  box-shadow: var(--app-shadow-soft);
+}
+
+.aviso-icono {
+  flex-shrink: 0;
+  color: #fdebd0;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.aviso-mensaje {
+  margin: 0;
+  font-size: var(--app-font-small, 0.9375rem);
+  line-height: 1.45;
+  color: #fffbf7;
+}
+
+.aviso-enlace {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: var(--app-font-small, 0.9375rem);
+  font-weight: 600;
+  color: #f5e6d3;
+  text-decoration: none;
+
+  &:hover {
+    color: #fffbf7;
+    text-decoration: underline;
+  }
+}

@@ -30,6 +30,16 @@ export const routes: Routes = [
           import('./features/layout/proximamente/proximamente').then((m) => m.Proximamente),
       },
       {
+        path: 'stock',
+        loadComponent: () =>
+          import('./features/stock/stock-list/stock-list').then((m) => m.StockList),
+      },
+      {
+        path: 'productos',
+        loadComponent: () =>
+          import('./features/productos/productos-list/productos-list').then((m) => m.ProductosList),
+      },
+      {
         path: 'almacenes',
         loadComponent: () =>
           import('./features/almacenes/almacenes-list/almacenes-list').then((m) => m.AlmacenesList),

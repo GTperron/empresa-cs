@@ -1,0 +1,84 @@
+<h2 mat-dialog-title>{{ esEdicion ? 'Editar producto' : 'Nuevo producto' }}</h2>
+
+@if (cargando()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="guardar()" id="producto-form">
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Código</mat-label>
+      <input matInput formControlName="codigo" maxlength="50" />
+      @if (form.controls.codigo.hasError('required')) {
+        <mat-error>El código es requerido</mat-error>
+      } @else if (form.controls.codigo.hasError('maxlength')) {
+        <mat-error>Máximo 50 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" maxlength="100" />
+      @if (form.controls.nombre.hasError('required')) {
+        <mat-error>El nombre es requerido</mat-error>
+      } @else if (form.controls.nombre.hasError('maxlength')) {
+        <mat-error>Máximo 100 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Descripción</mat-label>
+      <input matInput formControlName="descripcion" maxlength="255" />
+      @if (form.controls.descripcion.hasError('maxlength')) {
+        <mat-error>Máximo 255 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Tipo</mat-label>
+      <mat-select formControlName="tipo">
+        @for (t of tiposProducto; track t) {
+          <mat-option [value]="t">{{ etiquetasTipo[t] }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.tipo.hasError('required')) {
+        <mat-error>El tipo es requerido</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Unidad de medida</mat-label>
+      <mat-select formControlName="unidadMedida">
+        @for (u of unidadesMedida; track u) {
+          <mat-option [value]="u">{{ etiquetasUnidad[u] }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.unidadMedida.hasError('required')) {
+        <mat-error>La unidad de medida es requerida</mat-error>
+      }
+    </mat-form-field>
+
+    @if (esTipoVenta()) {
+      <mat-form-field appearance="outline" class="campo">
+        <mat-label>Precio de venta</mat-label>
+        <input matInput type="number" formControlName="precioVenta" min="0" step="0.01" />
+        @if (form.controls.precioVenta.hasError('required')) {
+          <mat-error>El precio de venta es requerido para productos de venta</mat-error>
+        } @else if (form.controls.precioVenta.hasError('min')) {
+          <mat-error>El precio no puede ser negativo</mat-error>
+        }
+      </mat-form-field>
+    }
+
+    @if (errorMensaje()) {
+      <p class="error-servidor">{{ errorMensaje() }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancelar()" [disabled]="cargando()">Cancelar</button>
+  <button mat-flat-button color="primary" type="submit" form="producto-form" [disabled]="cargando()">
+    Guardar
+  </button>
+</mat-dialog-actions>

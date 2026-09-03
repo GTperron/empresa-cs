@@ -456,26 +456,49 @@ body.app-shell::after {
   flex-shrink: 0;
 }
 
-// Selector / filtro compacto en encabezado (44px, alineado con .btn-alta)
+// Selector / filtro compacto en encabezado (44px fijos, alineado con .btn-alta)
 .encabezado-controles .filtro.mat-mdc-form-field {
+  --mat-form-field-container-height: 44px;
   width: 168px;
+  height: 44px;
+  min-height: 44px;
+  max-height: 44px;
   margin: 0;
+  box-sizing: border-box;
+
+  .mat-mdc-form-field-subscript-wrapper {
+    height: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align::before {
+    display: none;
+  }
 
   .mat-mdc-text-field-wrapper {
     height: 44px;
+    min-height: 44px;
+    max-height: 44px;
     background-color: var(--mat-sys-surface);
     border-radius: 10px;
+    box-sizing: border-box;
   }
 
   .mat-mdc-form-field-flex {
     align-items: center;
     height: 44px;
+    min-height: 44px;
+    max-height: 44px;
   }
 
   .mat-mdc-form-field-infix {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    padding-top: 14px !important;
+    padding-bottom: 2px !important;
+    height: 44px;
     min-height: 44px;
+    max-height: 44px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     border-top: 0;
@@ -501,19 +524,24 @@ body.app-shell::after {
     align-self: center;
   }
 
-  // Label centrado solo cuando aún no flota (campo vacío / sin foco inicial)
-  &:not(.mat-form-field-should-float) .mat-mdc-floating-label,
-  &:not(.mat-form-field-should-float) .mdc-floating-label {
+  // Label centrado solo cuando aún no flota (Material 22: mdc-floating-label--float-above)
+  .mdc-floating-label:not(.mdc-floating-label--float-above) {
     top: 50%;
     transform: translateY(-50%);
   }
 
-  // Con valor seleccionado: valor centrado en el espacio bajo el label flotante
-  &.mat-form-field-should-float .mat-mdc-form-field-infix {
-    padding-top: 14px !important;
-    padding-bottom: 2px !important;
-    min-height: 44px;
-    align-items: center;
+  // Con label flotante: ajuste fino del notch (misma caja 44px que campo vacío)
+  &:has(.mdc-floating-label--float-above) {
+    .mdc-notched-outline--notched .mdc-notched-outline__notch {
+      padding-top: 5px;
+    }
+
+    .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
+      transform: translateY(
+          calc(calc(4px + var(--mat-form-field-container-height) / 2) * -1 + 7px)
+        )
+        scale(var(--mat-mdc-form-field-floating-label-scale, 0.75)) !important;
+    }
   }
 }
 
