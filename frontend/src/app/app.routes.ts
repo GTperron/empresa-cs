@@ -57,6 +57,47 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'movimientos',
+        loadComponent: () =>
+          import('./features/movimientos/movimientos-list/movimientos-list').then((m) => m.MovimientosList),
+      },
+      {
+        path: 'transformaciones',
+        loadComponent: () =>
+          import('./features/transformaciones/transformaciones-list/transformaciones-list').then(
+            (m) => m.TransformacionesList,
+          ),
+      },
+      {
+        path: 'transformaciones/nueva',
+        loadComponent: () =>
+          import('./features/transformaciones/transformacion-form/transformacion-form').then(
+            (m) => m.TransformacionForm,
+          ),
+      },
+      {
+        path: 'transformaciones/:id',
+        loadComponent: () =>
+          import('./features/transformaciones/transformacion-detalle/transformacion-detalle').then(
+            (m) => m.TransformacionDetalle,
+          ),
+      },
+      {
+        path: 'ventas',
+        loadComponent: () =>
+          import('./features/ventas/ventas-list/ventas-list').then((m) => m.VentasList),
+      },
+      {
+        path: 'ventas/nueva',
+        loadComponent: () =>
+          import('./features/ventas/venta-form/venta-form').then((m) => m.VentaForm),
+      },
+      {
+        path: 'ventas/:id',
+        loadComponent: () =>
+          import('./features/ventas/venta-detalle/venta-detalle').then((m) => m.VentaDetalle),
+      },
+      {
         path: 'proximamente/:modulo',
         loadComponent: () =>
           import('./features/layout/proximamente/proximamente').then((m) => m.Proximamente),

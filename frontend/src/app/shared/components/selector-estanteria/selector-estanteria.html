@@ -1,0 +1,29 @@
+<mat-form-field appearance="outline" class="campo selector-estanteria">
+  <mat-label>{{ label() }}</mat-label>
+  <mat-select
+    [value]="value"
+    (selectionChange)="seleccionar($event.value)"
+    [disabled]="disabled || cargando() || errorCarga()"
+  >
+    @if (cargando()) {
+      <mat-option disabled>Cargando ubicaciones…</mat-option>
+    } @else if (errorCarga()) {
+      <mat-option disabled>No se pudieron cargar las estanterías</mat-option>
+    } @else if (grupos().length === 0) {
+      <mat-option disabled>No hay estanterías activas</mat-option>
+    } @else {
+      @for (grupo of grupos(); track grupo.almacenId) {
+        <mat-optgroup [label]="grupo.almacenLabel">
+          @for (op of grupo.opciones; track op.estanteriaId) {
+            @if (!estaExcluida(op.estanteriaId)) {
+              <mat-option [value]="op.estanteriaId">{{ op.label }}</mat-option>
+            }
+          }
+        </mat-optgroup>
+      }
+    }
+  </mat-select>
+  @if (cargando()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+</mat-form-field>

@@ -1,0 +1,137 @@
+<div class="encabezado">
+  <button
+    mat-icon-button
+    class="btn-volver"
+    (click)="cancelar()"
+    matTooltip="Volver al historial"
+    aria-label="Volver al historial"
+  >
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h1 class="titulo">Nueva transformación</h1>
+</div>
+
+@if (cargando()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<form class="form-transformacion" [formGroup]="form" (ngSubmit)="guardar()">
+  <section class="bloque">
+    <h2 class="bloque-titulo">Insumo a consumir</h2>
+
+    <div class="grid-cabecera">
+      <mat-form-field appearance="outline" class="campo">
+        <mat-label>Producto de entrada</mat-label>
+        <mat-select formControlName="productoEntradaId" [disabled]="cargandoProductos()">
+          @if (cargandoProductos()) {
+            <mat-option disabled>Cargando productos…</mat-option>
+          } @else if (productosEntrada().length === 0) {
+            <mat-option disabled>No hay insumos (ENTRADA) activos</mat-option>
+          } @else {
+            @for (p of productosEntrada(); track p.id) {
+              <mat-option [value]="p.id">{{ etiquetaProducto(p) }}</mat-option>
+            }
+          }
+        </mat-select>
+        @if (form.controls.productoEntradaId.hasError('required')) {
+          <mat-error>Seleccioná el insumo a consumir</mat-error>
+        }
+      </mat-form-field>
+
+      <app-selector-estanteria
+        formControlName="estanteriaOrigenId"
+        label="Estantería origen"
+      />
+
+      <mat-form-field appearance="outline" class="campo">
+        <mat-label>Cantidad consumida</mat-label>
+        <input matInput type="number" formControlName="cantidadConsumida" min="0.0001" step="any" />
+        @if (form.controls.cantidadConsumida.hasError('required')) {
+          <mat-error>La cantidad es requerida</mat-error>
+        } @else if (form.controls.cantidadConsumida.hasError('min')) {
+          <mat-error>La cantidad debe ser mayor a cero</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="campo campo-ancho">
+      <mat-label>Observaciones (opcional)</mat-label>
+      <textarea matInput formControlName="observaciones" rows="2" maxlength="1000"></textarea>
+      @if (form.controls.observaciones.hasError('maxlength')) {
+        <mat-error>Máximo 1000 caracteres</mat-error>
+      }
+    </mat-form-field>
+  </section>
+
+  <section class="bloque" formArrayName="detalles">
+    <div class="bloque-encabezado">
+      <h2 class="bloque-titulo">Productos generados</h2>
+      <button mat-stroked-button type="button" color="primary" (click)="agregarLinea()">
+        <mat-icon>add</mat-icon>
+        Agregar línea
+      </button>
+    </div>
+
+    @for (linea of detalles.controls; track linea; let i = $index) {
+      <div class="linea" [formGroupName]="i">
+        <span class="linea-numero">{{ i + 1 }}</span>
+
+        <mat-form-field appearance="outline" class="campo">
+          <mat-label>Producto de venta</mat-label>
+          <mat-select formControlName="productoVentaId" [disabled]="cargandoProductos()">
+            @if (cargandoProductos()) {
+              <mat-option disabled>Cargando productos…</mat-option>
+            } @else if (productosVenta().length === 0) {
+              <mat-option disabled>No hay productos (VENTA) activos</mat-option>
+            } @else {
+              @for (p of productosVenta(); track p.id) {
+                <mat-option [value]="p.id">{{ etiquetaProducto(p) }}</mat-option>
+              }
+            }
+          </mat-select>
+          @if (linea.get('productoVentaId')?.hasError('required')) {
+            <mat-error>Seleccioná el producto generado</mat-error>
+          }
+        </mat-form-field>
+
+        <app-selector-estanteria
+          formControlName="estanteriaDestinoId"
+          label="Estantería destino"
+        />
+
+        <mat-form-field appearance="outline" class="campo campo-cantidad">
+          <mat-label>Cantidad generada</mat-label>
+          <input matInput type="number" formControlName="cantidadGenerada" min="0.0001" step="any" />
+          @if (linea.get('cantidadGenerada')?.hasError('required')) {
+            <mat-error>Requerida</mat-error>
+          } @else if (linea.get('cantidadGenerada')?.hasError('min')) {
+            <mat-error>Debe ser mayor a cero</mat-error>
+          }
+        </mat-form-field>
+
+        <button
+          mat-icon-button
+          type="button"
+          class="btn-quitar"
+          (click)="quitarLinea(i)"
+          [disabled]="detalles.length === 1"
+          matTooltip="Quitar esta línea"
+          aria-label="Quitar esta línea"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    }
+  </section>
+
+  @if (errorMensaje()) {
+    <p class="error-servidor">{{ errorMensaje() }}</p>
+  }
+
+  <div class="acciones-form">
+    <button mat-button type="button" (click)="cancelar()" [disabled]="cargando()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="cargando()">
+      Registrar transformación
+    </button>
+  </div>
+</form>

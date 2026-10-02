@@ -122,9 +122,9 @@ export class Shell implements OnInit, OnDestroy {
     { etiqueta: 'Almacenes', icono: 'warehouse', ruta: '/app/almacenes' },
     { etiqueta: 'Productos', icono: 'inventory_2', ruta: '/app/productos' },
     { etiqueta: 'Stock', icono: 'inventory', ruta: '/app/stock' },
-    { etiqueta: 'Movimientos', icono: 'swap_horiz', ruta: '/app/proximamente/movimientos' },
-    { etiqueta: 'Transformaciones', icono: 'transform', ruta: '/app/proximamente/transformaciones' },
-    { etiqueta: 'Ventas', icono: 'point_of_sale', ruta: '/app/proximamente/ventas' },
+    { etiqueta: 'Movimientos', icono: 'swap_horiz', ruta: '/app/movimientos' },
+    { etiqueta: 'Transformaciones', icono: 'transform', ruta: '/app/transformaciones' },
+    { etiqueta: 'Ventas', icono: 'point_of_sale', ruta: '/app/ventas' },
   ];
 
   logout(): void {

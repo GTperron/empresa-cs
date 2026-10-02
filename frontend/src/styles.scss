@@ -112,6 +112,13 @@ html {
   // Ancho compartido filtro + botón alta en listados (mobile ≤767.98px)
   --app-encabezado-control-mobile-width: 230px;
 
+  // Label flotante en .filtro compacto (44px): mat-select, type="date", etc.
+  --app-filtro-notch-padding-top: 5px;
+  --app-filtro-floating-label-y-adjust: 8px;
+  // Espacio entre el label flotante (arriba) y el valor del campo (abajo).
+  // Base 14px para mat-select; los inputs type="date" lo suben (ver .filtro-fecha).
+  --app-filtro-infix-padding-top: 14px;
+
   // Diálogos de formulario (almacén, zona, estantería)
   --app-form-dialog-desktop-width: 480px;
   --app-form-dialog-mobile-width: 95vw;
@@ -227,9 +234,10 @@ body.app-shell::after {
   border-radius: 12px;
   padding: 10px 18px 14px;
   box-shadow: var(--app-shadow-panel);
-  overflow-x: auto;
+  // overflow visible: un ancestro con overflow auto/hidden hace que Material oculte
+  // matTooltip al detectar el overlay recortado (isOverlayClipped).
+  overflow: visible;
   max-width: 100%;
-  -webkit-overflow-scrolling: touch;
 }
 
 .mat-mdc-table {
@@ -456,8 +464,9 @@ body.app-shell::after {
   flex-shrink: 0;
 }
 
-// Selector / filtro compacto en encabezado (44px fijos, alineado con .btn-alta)
-.encabezado-controles .filtro.mat-mdc-form-field {
+// Filtros compactos 44px (Stock/Almacenes en .encabezado-controles; Movimientos en .filtros-movimientos)
+.encabezado-controles .filtro.mat-mdc-form-field,
+.filtros-movimientos .filtro.mat-mdc-form-field {
   --mat-form-field-container-height: 44px;
   width: 168px;
   height: 44px;
@@ -493,7 +502,7 @@ body.app-shell::after {
   }
 
   .mat-mdc-form-field-infix {
-    padding-top: 14px !important;
+    padding-top: var(--app-filtro-infix-padding-top) !important;
     padding-bottom: 2px !important;
     height: 44px;
     min-height: 44px;
@@ -524,6 +533,17 @@ body.app-shell::after {
     align-self: center;
   }
 
+  // Inputs (p. ej. type="date" en Movimientos): misma alineación vertical que mat-select
+  .mat-mdc-input-element {
+    align-self: center;
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 1.25;
+    box-sizing: border-box;
+  }
+
   // Label centrado solo cuando aún no flota (Material 22: mdc-floating-label--float-above)
   .mdc-floating-label:not(.mdc-floating-label--float-above) {
     top: 50%;
@@ -533,15 +553,38 @@ body.app-shell::after {
   // Con label flotante: ajuste fino del notch (misma caja 44px que campo vacío)
   &:has(.mdc-floating-label--float-above) {
     .mdc-notched-outline--notched .mdc-notched-outline__notch {
-      padding-top: 5px;
+      padding-top: var(--app-filtro-notch-padding-top);
     }
 
     .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
+      line-height: 1.15;
       transform: translateY(
-          calc(calc(4px + var(--mat-form-field-container-height) / 2) * -1 + 7px)
+          calc(
+            calc(4px + var(--mat-form-field-container-height) / 2) * -1 +
+              var(--app-filtro-floating-label-y-adjust)
+          )
         )
         scale(var(--mat-mdc-form-field-floating-label-scale, 0.75)) !important;
     }
+  }
+}
+
+// Inputs type="date" (filtros Desde/Hasta de Movimientos): el valor "dd/mm/aaaa"
+// quedaba muy pegado al label flotante. Se empuja el valor hacia abajo con más
+// padding-top y alineándolo al fondo del infix; NO se mueve el label (que ya
+// quedó bien). Solo afecta a .filtro-fecha, no a los mat-select (que ya están OK).
+// Misma especificidad que el bloque compartido (4 clases) y declarado después,
+// por lo que gana sin necesidad de subir el !important.
+.filtros-movimientos .filtro-fecha.mat-mdc-form-field {
+  --app-filtro-infix-padding-top: 20px;
+
+  .mat-mdc-form-field-infix {
+    align-items: flex-end;
+    padding-bottom: 5px !important;
+  }
+
+  .mat-mdc-input-element {
+    align-self: flex-end;
   }
 }
 

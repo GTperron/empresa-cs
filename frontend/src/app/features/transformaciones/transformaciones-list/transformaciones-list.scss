@@ -1,0 +1,98 @@
+:host {
+  display: block;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.encabezado-movimientos {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.encabezado-acciones {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+// Reusa el bloque global .filtros-movimientos (altura 44px + fix de label flotante
+// y de inputs type="date"); acá solo se define el layout del contenedor.
+.filtros-movimientos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 18px;
+  margin-bottom: 12px;
+}
+
+.filtros-movimientos .filtro.mat-mdc-form-field {
+  margin: 0;
+}
+
+.filtros-movimientos .filtro-producto {
+  width: 280px;
+}
+
+.filtros-movimientos .filtro-fecha {
+  width: 156px;
+}
+
+.tabla {
+  width: 100%;
+}
+
+.fila-clicable {
+  cursor: pointer;
+}
+
+.cantidad {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.cantidad-resta {
+  color: var(--mat-sys-error);
+}
+
+.chip-lineas {
+  display: inline-block;
+  min-width: 1.5rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+@media (max-width: 767.98px) {
+  .encabezado-movimientos {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .encabezado-acciones {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .encabezado-acciones .btn-alta {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .filtros-movimientos {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
+
+  .filtros-movimientos .filtro.mat-mdc-form-field {
+    width: min(100%, var(--app-encabezado-control-mobile-width));
+    max-width: var(--app-encabezado-control-mobile-width);
+  }
+}

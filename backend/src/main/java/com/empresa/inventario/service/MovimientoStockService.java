@@ -14,6 +14,7 @@ import com.empresa.inventario.enums.ProductoTipo;
 import com.empresa.inventario.exception.OperacionInvalidaException;
 import com.empresa.inventario.exception.StockInsuficienteException;
 import com.empresa.inventario.repository.MovimientoStockRepository;
+import com.empresa.inventario.repository.spec.MovimientoStockSpecs;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -137,7 +138,8 @@ public class MovimientoStockService {
                                            Long usuarioId, LocalDateTime desde, LocalDateTime hasta,
                                            Pageable pageable) {
         return movimientoStockRepository
-                .buscar(productoId, estanteriaId, tipo, usuarioId, desde, hasta, pageable)
+                .findAll(MovimientoStockSpecs.conFiltros(
+                        productoId, estanteriaId, tipo, usuarioId, desde, hasta), pageable)
                 .map(this::convertirADTO);
     }
 

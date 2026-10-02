@@ -1,0 +1,98 @@
+:host {
+  display: block;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.btn-volver {
+  flex-shrink: 0;
+}
+
+.bloque {
+  background-color: var(--mat-sys-surface);
+  border: var(--app-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: var(--app-shadow-panel);
+  max-width: 1000px;
+  margin-bottom: 20px;
+}
+
+.bloque-titulo {
+  margin: 0 0 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: var(--app-font-title-section, 1.25rem);
+  font-weight: 700;
+  color: var(--mat-sys-on-surface);
+}
+
+.datos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+  margin: 0;
+}
+
+.dato {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  dt {
+    font-size: var(--app-font-small, 0.9375rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  dd {
+    margin: 0;
+    font-size: var(--app-font-body);
+    color: var(--mat-sys-on-surface);
+  }
+}
+
+.tabla {
+  width: 100%;
+}
+
+.total {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.estado-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: var(--app-font-small, 0.9375rem);
+  font-weight: 600;
+}
+
+.estado-chip[data-estado='COMPLETADA'] {
+  background: var(--app-success-container, #e8f0e4);
+  color: var(--app-success, #5a7248);
+}
+
+.estado-chip[data-estado='ANULADA'] {
+  background: var(--mat-sys-error-container, #f8e6e4);
+  color: var(--mat-sys-error);
+}
+
+.error-servidor {
+  margin: 0 0 16px;
+  color: var(--mat-sys-error);
+  font-weight: 600;
+}
+
+@media (max-width: 767.98px) {
+  .datos {
+    grid-template-columns: 1fr;
+  }
+}

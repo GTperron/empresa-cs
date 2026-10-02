@@ -17,6 +17,7 @@ import com.empresa.inventario.exception.OperacionInvalidaException;
 import com.empresa.inventario.exception.RecursoNoEncontradoException;
 import com.empresa.inventario.exception.StockInsuficienteException;
 import com.empresa.inventario.repository.VentaRepository;
+import com.empresa.inventario.repository.spec.VentaSpecs;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -119,7 +120,9 @@ public class VentaService {
     @Transactional(readOnly = true)
     public Page<VentaDTO> listar(Long usuarioId, VentaEstado estado,
                                  LocalDateTime desde, LocalDateTime hasta, Pageable pageable) {
-        return ventaRepository.buscar(usuarioId, estado, desde, hasta, pageable).map(this::convertirADTO);
+        return ventaRepository
+                .findAll(VentaSpecs.conFiltros(usuarioId, estado, desde, hasta), pageable)
+                .map(this::convertirADTO);
     }
 
     @Transactional(readOnly = true)

@@ -1,0 +1,96 @@
+<div class="encabezado">
+  <button
+    mat-icon-button
+    class="btn-volver"
+    (click)="volver()"
+    matTooltip="Volver al historial"
+    aria-label="Volver al historial"
+  >
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h1 class="titulo">
+    @if (venta(); as v) {
+      Venta #{{ v.id }}
+    } @else {
+      Venta
+    }
+  </h1>
+</div>
+
+@if (cargando()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (errorMensaje()) {
+  <p class="error-servidor">{{ errorMensaje() }}</p>
+}
+
+@if (venta(); as v) {
+  <section class="bloque">
+    <h2 class="bloque-titulo">Datos generales</h2>
+    <dl class="datos">
+      <div class="dato">
+        <dt>Fecha</dt>
+        <dd>{{ formatoFecha(v.fecha) }}</dd>
+      </div>
+      <div class="dato">
+        <dt>Usuario</dt>
+        <dd>{{ v.usuarioEmail }}</dd>
+      </div>
+      <div class="dato">
+        <dt>Estado</dt>
+        <dd>
+          <span class="estado-chip" [attr.data-estado]="v.estado">{{ etiquetaEstado(v.estado) }}</span>
+        </dd>
+      </div>
+      <div class="dato">
+        <dt>Total</dt>
+        <dd class="total">{{ formatoMoneda(v.total) }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="bloque">
+    <h2 class="bloque-titulo">Líneas ({{ v.detalles.length }})</h2>
+
+    <div class="tabla-contenedor">
+      <table mat-table [dataSource]="v.detalles" class="tabla">
+        <ng-container matColumnDef="producto">
+          <th mat-header-cell *matHeaderCellDef>Producto</th>
+          <td mat-cell *matCellDef="let d" data-label="Producto">
+            {{ d.productoCodigo }} — {{ d.productoNombre }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estanteria">
+          <th mat-header-cell *matHeaderCellDef>Estantería</th>
+          <td mat-cell *matCellDef="let d" data-label="Estantería">{{ d.estanteriaCodigo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+          <td mat-cell *matCellDef="let d" data-label="Cantidad">
+            {{ formatoCantidad(d.cantidad) }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="precioUnitario">
+          <th mat-header-cell *matHeaderCellDef>Precio unitario</th>
+          <td mat-cell *matCellDef="let d" data-label="Precio unitario">
+            {{ formatoMoneda(d.precioUnitario) }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="subtotal">
+          <th mat-header-cell *matHeaderCellDef>Subtotal</th>
+          <td mat-cell *matCellDef="let d" data-label="Subtotal">
+            <span class="total">{{ formatoMoneda(d.subtotal) }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+      </table>
+    </div>
+  </section>
+}

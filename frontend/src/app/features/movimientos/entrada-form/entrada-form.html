@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Registrar entrada</h2>
+
+@if (cargando()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="guardar()" id="entrada-form">
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Producto</mat-label>
+      <mat-select formControlName="productoId" [disabled]="cargandoProductos()">
+        @if (cargandoProductos()) {
+          <mat-option disabled>Cargando productos…</mat-option>
+        } @else if (productos().length === 0) {
+          <mat-option disabled>No hay productos ENTRADA activos</mat-option>
+        } @else {
+          @for (p of productos(); track p.id) {
+            <mat-option [value]="p.id">{{ etiquetaProducto(p) }}</mat-option>
+          }
+        }
+      </mat-select>
+      @if (form.controls.productoId.hasError('required')) {
+        <mat-error>Seleccioná un producto</mat-error>
+      }
+    </mat-form-field>
+
+    <app-selector-estanteria formControlName="estanteriaId" label="Estantería destino" />
+
+    @if (form.controls.estanteriaId.hasError('required') && form.controls.estanteriaId.touched) {
+      <p class="error-campo">Seleccioná una estantería</p>
+    }
+
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Cantidad</mat-label>
+      <input matInput type="number" formControlName="cantidad" min="0.0001" step="any" />
+      @if (form.controls.cantidad.hasError('required')) {
+        <mat-error>La cantidad es requerida</mat-error>
+      } @else if (form.controls.cantidad.hasError('min')) {
+        <mat-error>La cantidad debe ser mayor a cero</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMensaje()) {
+      <p class="error-servidor">{{ errorMensaje() }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancelar()" [disabled]="cargando()">Cancelar</button>
+  <button mat-flat-button color="primary" type="submit" form="entrada-form" [disabled]="cargando()">
+    Registrar
+  </button>
+</mat-dialog-actions>

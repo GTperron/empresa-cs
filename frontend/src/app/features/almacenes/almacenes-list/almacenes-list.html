@@ -64,12 +64,19 @@
             mat-icon-button
             (click)="verZonas(a)"
             matTooltip="Ver zonas de este almacén"
+            matTooltipPosition="before"
             aria-label="Ver zonas de este almacén"
           >
             <mat-icon>account_tree</mat-icon>
           </button>
           @if (esAdmin()) {
-            <button mat-icon-button (click)="editar(a)" matTooltip="Editar almacén" aria-label="Editar almacén">
+            <button
+              mat-icon-button
+              (click)="editar(a)"
+              matTooltip="Editar almacén"
+              matTooltipPosition="before"
+              aria-label="Editar almacén"
+            >
               <mat-icon>edit</mat-icon>
             </button>
             @if (a.activo) {
@@ -77,6 +84,7 @@
                 mat-icon-button
                 (click)="desactivar(a)"
                 matTooltip="Desactivar almacén"
+                matTooltipPosition="before"
                 aria-label="Desactivar almacén"
               >
                 <mat-icon>block</mat-icon>
@@ -86,6 +94,7 @@
                 mat-icon-button
                 (click)="activar(a)"
                 matTooltip="Activar almacén"
+                matTooltipPosition="before"
                 aria-label="Activar almacén"
               >
                 <mat-icon>check_circle</mat-icon>

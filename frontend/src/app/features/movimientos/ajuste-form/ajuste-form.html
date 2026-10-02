@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>Registrar ajuste</h2>
+
+@if (cargando()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="guardar()" id="ajuste-form">
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Producto</mat-label>
+      <mat-select formControlName="productoId" [disabled]="cargandoProductos()">
+        @if (cargandoProductos()) {
+          <mat-option disabled>Cargando productos…</mat-option>
+        } @else if (productos().length === 0) {
+          <mat-option disabled>No hay productos activos</mat-option>
+        } @else {
+          @for (p of productos(); track p.id) {
+            <mat-option [value]="p.id">{{ etiquetaProducto(p) }}</mat-option>
+          }
+        }
+      </mat-select>
+      @if (form.controls.productoId.hasError('required')) {
+        <mat-error>Seleccioná un producto</mat-error>
+      }
+    </mat-form-field>
+
+    <app-selector-estanteria formControlName="estanteriaId" label="Estantería" />
+
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Cantidad (negativa resta stock)</mat-label>
+      <input matInput type="number" formControlName="cantidad" step="any" />
+      <mat-hint>Usá valores positivos para sumar y negativos para restar</mat-hint>
+      @if (form.controls.cantidad.hasError('required')) {
+        <mat-error>La cantidad es requerida</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Motivo</mat-label>
+      <textarea matInput formControlName="motivo" rows="3" maxlength="500"></textarea>
+      @if (form.controls.motivo.hasError('required')) {
+        <mat-error>El motivo es obligatorio</mat-error>
+      } @else if (form.controls.motivo.hasError('maxlength')) {
+        <mat-error>Máximo 500 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMensaje()) {
+      <p class="error-servidor">{{ errorMensaje() }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancelar()" [disabled]="cargando()">Cancelar</button>
+  <button mat-flat-button color="primary" type="submit" form="ajuste-form" [disabled]="cargando()">
+    Registrar
+  </button>
+</mat-dialog-actions>

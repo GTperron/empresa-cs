@@ -1,0 +1,108 @@
+<div class="encabezado">
+  <button
+    mat-icon-button
+    class="btn-volver"
+    (click)="cancelar()"
+    matTooltip="Volver al historial"
+    aria-label="Volver al historial"
+  >
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h1 class="titulo">Nueva venta</h1>
+</div>
+
+@if (cargando()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<form class="form-venta" [formGroup]="form" (ngSubmit)="guardar()">
+  <section class="bloque" formArrayName="detalles">
+    <div class="bloque-encabezado">
+      <h2 class="bloque-titulo">Líneas de venta</h2>
+      <button mat-stroked-button type="button" color="primary" (click)="agregarLinea()">
+        <mat-icon>add</mat-icon>
+        Agregar línea
+      </button>
+    </div>
+
+    @for (linea of detalles.controls; track linea; let i = $index) {
+      <div class="linea" [formGroupName]="i">
+        <span class="linea-numero">{{ i + 1 }}</span>
+
+        <mat-form-field appearance="outline" class="campo">
+          <mat-label>Producto</mat-label>
+          <mat-select formControlName="productoId" [disabled]="cargandoProductos()">
+            @if (cargandoProductos()) {
+              <mat-option disabled>Cargando productos…</mat-option>
+            } @else if (productosVenta().length === 0) {
+              <mat-option disabled>No hay productos (VENTA) activos</mat-option>
+            } @else {
+              @for (p of productosVenta(); track p.id) {
+                <mat-option [value]="p.id">{{ etiquetaProducto(p) }}</mat-option>
+              }
+            }
+          </mat-select>
+          @if (linea.get('productoId')?.hasError('required')) {
+            <mat-error>Seleccioná un producto</mat-error>
+          }
+        </mat-form-field>
+
+        <app-selector-estanteria formControlName="estanteriaId" label="Estantería" />
+
+        <mat-form-field appearance="outline" class="campo campo-cantidad">
+          <mat-label>Cantidad</mat-label>
+          <input matInput type="number" formControlName="cantidad" min="0.0001" step="any" />
+          @if (linea.get('cantidad')?.hasError('required')) {
+            <mat-error>Requerida</mat-error>
+          } @else if (linea.get('cantidad')?.hasError('min')) {
+            <mat-error>Debe ser mayor a cero</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="ref-precio" aria-live="polite">
+          <span class="ref-label">Precio ref.</span>
+          <span class="ref-valor">
+            @if (precioReferencia(linea.get('productoId')?.value) === null) {
+              —
+            } @else {
+              {{ formatoMoneda(precioReferencia(linea.get('productoId')?.value)!) }}
+            }
+          </span>
+          <span class="ref-label">Subtotal est.</span>
+          <span class="ref-valor">{{ formatoMoneda(subtotalEstimado(linea.getRawValue())) }}</span>
+        </div>
+
+        <button
+          mat-icon-button
+          type="button"
+          class="btn-quitar"
+          (click)="quitarLinea(i)"
+          [disabled]="detalles.length === 1"
+          matTooltip="Quitar esta línea"
+          aria-label="Quitar esta línea"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    }
+  </section>
+
+  <aside class="bloque bloque-total">
+    <p class="total-estimado">
+      <span class="total-label">Total estimado</span>
+      <span class="total-valor">{{ formatoMoneda(totalEstimado()) }}</span>
+    </p>
+    <p class="total-hint">El total definitivo lo confirma el servidor al registrar la venta.</p>
+  </aside>
+
+  @if (errorMensaje()) {
+    <p class="error-servidor">{{ errorMensaje() }}</p>
+  }
+
+  <div class="acciones-form">
+    <button mat-button type="button" (click)="cancelar()" [disabled]="cargando()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="cargando()">
+      Confirmar venta
+    </button>
+  </div>
+</form>

@@ -70,12 +70,19 @@
             mat-icon-button
             (click)="verEstanterias(z)"
             matTooltip="Ver estanterías de esta zona"
+            matTooltipPosition="before"
             aria-label="Ver estanterías de esta zona"
           >
             <mat-icon>layers</mat-icon>
           </button>
           @if (esAdmin()) {
-            <button mat-icon-button (click)="editar(z)" matTooltip="Editar zona" aria-label="Editar zona">
+            <button
+              mat-icon-button
+              (click)="editar(z)"
+              matTooltip="Editar zona"
+              matTooltipPosition="before"
+              aria-label="Editar zona"
+            >
               <mat-icon>edit</mat-icon>
             </button>
             @if (z.activo) {
@@ -83,6 +90,7 @@
                 mat-icon-button
                 (click)="desactivar(z)"
                 matTooltip="Desactivar zona"
+                matTooltipPosition="before"
                 aria-label="Desactivar zona"
               >
                 <mat-icon>block</mat-icon>
@@ -92,6 +100,7 @@
                 mat-icon-button
                 (click)="activar(z)"
                 matTooltip="Activar zona"
+                matTooltipPosition="before"
                 aria-label="Activar zona"
               >
                 <mat-icon>check_circle</mat-icon>

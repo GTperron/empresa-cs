@@ -1,0 +1,132 @@
+<div class="encabezado encabezado-movimientos">
+  <h1 class="titulo">Transformaciones</h1>
+  <span class="spacer"></span>
+
+  <div class="encabezado-controles encabezado-acciones">
+    <button mat-flat-button color="primary" class="btn-alta" (click)="nueva()">
+      <mat-icon>add</mat-icon>
+      Nueva transformación
+    </button>
+  </div>
+</div>
+
+<div class="filtros-movimientos">
+  <mat-form-field appearance="outline" class="filtro filtro-producto" subscriptSizing="dynamic">
+    <mat-label>Insumo consumido</mat-label>
+    <mat-select
+      [ngModel]="filtroProductoEntradaId()"
+      (ngModelChange)="cambiarFiltroProducto($event)"
+      [disabled]="cargandoFiltros()"
+    >
+      <mat-option [value]="null">Todos</mat-option>
+      @for (p of productosEntrada(); track p.id) {
+        <mat-option [value]="p.id">{{ etiquetaProducto(p) }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="filtro filtro-fecha" subscriptSizing="dynamic">
+    <mat-label>Desde</mat-label>
+    <input
+      matInput
+      type="date"
+      [ngModel]="filtroDesde()"
+      (ngModelChange)="cambiarFiltroDesde($event)"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="filtro filtro-fecha" subscriptSizing="dynamic">
+    <mat-label>Hasta</mat-label>
+    <input
+      matInput
+      type="date"
+      [ngModel]="filtroHasta()"
+      (ngModelChange)="cambiarFiltroHasta($event)"
+    />
+  </mat-form-field>
+</div>
+
+@if (cargando() || cargandoFiltros()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<div class="tabla-contenedor">
+  <table mat-table [dataSource]="datos()" class="tabla">
+    <ng-container matColumnDef="fecha">
+      <th mat-header-cell *matHeaderCellDef>Fecha</th>
+      <td mat-cell *matCellDef="let t" data-label="Fecha">{{ formatoFecha(t.fecha) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="productoEntrada">
+      <th mat-header-cell *matHeaderCellDef>Insumo consumido</th>
+      <td mat-cell *matCellDef="let t" data-label="Insumo consumido">
+        {{ t.productoEntradaCodigo }} — {{ t.productoEntradaNombre }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="cantidadConsumida">
+      <th mat-header-cell *matHeaderCellDef>Cantidad consumida</th>
+      <td mat-cell *matCellDef="let t" data-label="Cantidad consumida">
+        <span class="cantidad cantidad-resta">−{{ formatoCantidad(t.cantidadConsumida) }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="lineas">
+      <th mat-header-cell *matHeaderCellDef>Productos generados</th>
+      <td mat-cell *matCellDef="let t" data-label="Productos generados">
+        <span class="chip-lineas">{{ t.detalles.length }}</span>
+        {{ t.detalles.length === 1 ? 'producto' : 'productos' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="usuario">
+      <th mat-header-cell *matHeaderCellDef>Usuario</th>
+      <td mat-cell *matCellDef="let t" data-label="Usuario">{{ t.usuarioEmail }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="col-acciones">Acciones</th>
+      <td mat-cell *matCellDef="let t" class="col-acciones" data-label="Acciones">
+        <div class="acciones-fila">
+          <button
+            mat-icon-button
+            (click)="verDetalle(t); $event.stopPropagation()"
+            matTooltip="Ver detalle de la transformación"
+            matTooltipPosition="before"
+            aria-label="Ver detalle de la transformación"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: columnas"
+      class="fila-clicable"
+      (click)="verDetalle(row)"
+    ></tr>
+
+    <tr class="fila-vacia" *matNoDataRow>
+      <td [attr.colspan]="columnas.length">
+        @if (!cargando() && !cargandoFiltros()) {
+          @if (hayFiltrosActivos()) {
+            No hay transformaciones que coincidan con los filtros seleccionados.
+          } @else {
+            No hay transformaciones registradas todavía.
+          }
+        }
+      </td>
+    </tr>
+  </table>
+</div>
+
+<mat-paginator
+  [length]="total()"
+  [pageIndex]="pageIndex()"
+  [pageSize]="pageSize()"
+  [pageSizeOptions]="[5, 10, 25, 50]"
+  (page)="cambiarPagina($event)"
+/>

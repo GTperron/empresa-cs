@@ -1,0 +1,92 @@
+<div class="encabezado">
+  <button
+    mat-icon-button
+    class="btn-volver"
+    (click)="volver()"
+    matTooltip="Volver al historial"
+    aria-label="Volver al historial"
+  >
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h1 class="titulo">
+    @if (transformacion(); as t) {
+      Transformación #{{ t.id }}
+    } @else {
+      Transformación
+    }
+  </h1>
+</div>
+
+@if (cargando()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (errorMensaje()) {
+  <p class="error-servidor">{{ errorMensaje() }}</p>
+}
+
+@if (transformacion(); as t) {
+  <section class="bloque">
+    <h2 class="bloque-titulo">Datos generales</h2>
+    <dl class="datos">
+      <div class="dato">
+        <dt>Fecha</dt>
+        <dd>{{ formatoFecha(t.fecha) }}</dd>
+      </div>
+      <div class="dato">
+        <dt>Usuario</dt>
+        <dd>{{ t.usuarioEmail }}</dd>
+      </div>
+      <div class="dato">
+        <dt>Insumo consumido</dt>
+        <dd>{{ t.productoEntradaCodigo }} — {{ t.productoEntradaNombre }}</dd>
+      </div>
+      <div class="dato">
+        <dt>Estantería origen</dt>
+        <dd>{{ t.estanteriaOrigenCodigo }}</dd>
+      </div>
+      <div class="dato">
+        <dt>Cantidad consumida</dt>
+        <dd class="cantidad cantidad-resta">−{{ formatoCantidad(t.cantidadConsumida) }}</dd>
+      </div>
+      @if (t.observaciones) {
+        <div class="dato dato-ancho">
+          <dt>Observaciones</dt>
+          <dd>{{ t.observaciones }}</dd>
+        </div>
+      }
+    </dl>
+  </section>
+
+  <section class="bloque">
+    <h2 class="bloque-titulo">Productos generados ({{ t.detalles.length }})</h2>
+
+    <div class="tabla-contenedor">
+      <table mat-table [dataSource]="t.detalles" class="tabla">
+        <ng-container matColumnDef="productoVenta">
+          <th mat-header-cell *matHeaderCellDef>Producto de venta</th>
+          <td mat-cell *matCellDef="let d" data-label="Producto de venta">
+            {{ d.productoVentaCodigo }} — {{ d.productoVentaNombre }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estanteriaDestino">
+          <th mat-header-cell *matHeaderCellDef>Estantería destino</th>
+          <td mat-cell *matCellDef="let d" data-label="Estantería destino">
+            {{ d.estanteriaDestinoCodigo }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadGenerada">
+          <th mat-header-cell *matHeaderCellDef>Cantidad generada</th>
+          <td mat-cell *matCellDef="let d" data-label="Cantidad generada">
+            <span class="cantidad cantidad-suma">+{{ formatoCantidad(d.cantidadGenerada) }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+      </table>
+    </div>
+  </section>
+}

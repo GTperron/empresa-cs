@@ -16,6 +16,7 @@ import com.empresa.inventario.exception.OperacionInvalidaException;
 import com.empresa.inventario.exception.RecursoNoEncontradoException;
 import com.empresa.inventario.exception.StockInsuficienteException;
 import com.empresa.inventario.repository.TransformacionRepository;
+import com.empresa.inventario.repository.spec.TransformacionSpecs;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -111,7 +112,8 @@ public class TransformacionService {
     @Transactional(readOnly = true)
     public Page<TransformacionDTO> listar(Long productoEntradaId, Long usuarioId,
                                           LocalDateTime desde, LocalDateTime hasta, Pageable pageable) {
-        return transformacionRepository.buscar(productoEntradaId, usuarioId, desde, hasta, pageable)
+        return transformacionRepository
+                .findAll(TransformacionSpecs.conFiltros(productoEntradaId, usuarioId, desde, hasta), pageable)
                 .map(this::convertirADTO);
     }
 

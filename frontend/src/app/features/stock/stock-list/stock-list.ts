@@ -56,7 +56,7 @@ export class StockList {
   readonly columnas = ['producto', 'ubicacion', 'cantidad', 'unidadMedida'] as const;
 
   /** Módulo Movimientos (Próximamente) — destino para cargar stock. */
-  readonly rutaMovimientos = '/app/proximamente/movimientos';
+  readonly rutaMovimientos = '/app/movimientos';
 
   constructor() {
     this.cargarOpcionesFiltro();
